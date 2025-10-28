@@ -14,8 +14,8 @@ function InputField({ inputValue, inputType, minValue = null }) {
         type={inputType}
         id={inputValue}
         name={inputValue}
-        placeholder={inputValue}
         min={minValue}
+        defaultValue={minValue}
       ></input>
     </InputDiv>
   );

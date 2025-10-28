@@ -6,13 +6,13 @@ import Range from "./Range";
 import { IoMdClose } from "react-icons/io";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
-import { useLoadProductsForFilterAndForm } from "../features/products/useLoadProductsForFilterAndForm";
 import { useQuery } from "@tanstack/react-query";
 import { getProductsForFilterAndForm } from "../services/apiProducts";
 
 const Modal = styled.div`
   border: 1px solid;
   position: absolute;
+  z-index: 1;
   top: 200px;
   background-color: var(--color-grey-50);
   display: flex;
@@ -125,7 +125,7 @@ function FilterProducts({ setSelectedSortOption }) {
   //Get colors available from products and display on filter modal
   const colorsAvailable = products
     .flatMap((product) => {
-      return Object.keys(product.variants);
+      if (product?.variants) return Object.keys(product?.variants) || "";
     })
     .sort();
   const colorsDisplayed = [...new Set(colorsAvailable)].slice(0, 5);
@@ -155,7 +155,11 @@ function FilterProducts({ setSelectedSortOption }) {
       </Button>
       {openedModal && (
         <Modal>
-          <Button type="tertiary" onClick={() => setOpenedModal(false)}>
+          <Button
+            type="tertiary"
+            selfalign="end"
+            onClick={() => setOpenedModal(false)}
+          >
             <IoMdClose size="15px" />
           </Button>
           <Form onSubmit={handleSubmit(onSubmit)}>

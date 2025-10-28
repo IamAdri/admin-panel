@@ -1,3 +1,4 @@
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
 
 const Div = styled.div`
@@ -5,18 +6,26 @@ const Div = styled.div`
   gap: 5px;
 `;
 
-function SelectInput({ optionValue, setOptionValue, optionArray, labelTitle }) {
+function SelectInput({
+  optionValue,
+  setOptionValue,
+  optionArray,
+  labelTitle,
+  register,
+}) {
+  //const { register } = useForm();
   return (
     <Div>
       <label htmlFor={optionValue}>{labelTitle}</label>
       <select
         id={optionValue}
         name={optionValue}
-        value={optionValue}
+        defaultValue={optionValue}
         onChange={(e) => {
           e.preventDefault();
           setOptionValue(e.target.value);
         }}
+        {...register}
       >
         {optionArray.map((optionValue) => {
           return (

@@ -58,3 +58,39 @@ export async function getProductsForFilterAndForm() {
 
   return data;
 }
+
+export async function addNewProduct(formData) {
+  const category = formData.category.split(",");
+  console.log(formData);
+  const firstColor = formData.color1;
+  const secondColor = formData.color2;
+  let variants = {
+    [firstColor]: [],
+    [secondColor]: [],
+  };
+
+  console.log(variants);
+
+  const { data, error } = await supabase
+    .from("items")
+    .insert([
+      {
+        name: formData.name,
+        category: category,
+        description: formData.description,
+        variants: variants,
+        price: Number(formData.price),
+        discount: Number(formData.discount),
+        itemType: formData.itemType,
+      },
+    ])
+    .select();
+
+  if (error) throw new Error("Could not add new product!");
+  return data;
+}
+
+export async function deleteProduct(name) {
+  const { error } = await supabase.from("items").delete().eq("name", name);
+  if (error) throw new Error("Could not delete the product!");
+}

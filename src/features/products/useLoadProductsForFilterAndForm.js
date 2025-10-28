@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProductsForFilterAndForm } from "../../services/apiProducts";
-import { useEffect } from "react";
 
 export function useLoadProductsForFilterAndForm() {
   const {

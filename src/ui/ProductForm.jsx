@@ -1,23 +1,36 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { getProductsForFilterAndForm } from "../services/apiProducts";
+import {
+  addNewProduct,
+  getProductsForFilterAndForm,
+} from "../services/apiProducts";
 import SelectInput from "./SelectInput";
 import styled from "styled-components";
 import InputField from "./InputField";
 import Button from "./Button";
+import { IoMdClose } from "react-icons/io";
+import { useForm } from "react-hook-form";
+import Spinner from "./Spinner";
+import toast from "react-hot-toast";
 
-const ProductFormDiv = styled.div`
-  width: 750px;
+const ProductFormMain = styled.div`
+  width: fit-content;
   margin: auto;
   margin-top: 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid;
+`;
+const FormDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-grey-400);
+  padding: 3px 3px 9px 3px;
 `;
 const Form = styled.form`
   display: flex;
-  gap: 75px;
+  gap: 150px;
+  margin: 0px 15px;
 `;
 const ColumnDiv = styled.div`
   display: flex;
@@ -29,13 +42,21 @@ const InputDiv = styled.div`
   gap: 5px;
   align-items: start;
 `;
+const Submit = styled.input`
+  background: none;
+  color: inherit;
+  border: none;
+  cursor: pointer;
+`;
 
 function ProductForm() {
   const [type, setType] = useState("shoes");
   const [category, setCategory] = useState("heels");
-  const [color, setColor] = useState("beige");
-  const [size, setSize] = useState("34");
+  const [firstColor, setFirstColor] = useState("beige");
+  const [secondColor, setSecondColor] = useState("beige");
   const [openForm, setOpenForm] = useState(false);
+  const { register, setValue, watch, handleSubmit, reset } = useForm();
+  const queryClient = useQueryClient();
   const {
     isLoading,
     data: products,
@@ -44,9 +65,20 @@ function ProductForm() {
     queryKey: ["productsForFilterAndForm"],
     queryFn: getProductsForFilterAndForm,
   });
+  const { mutate } = useMutation({
+    mutationFn: addNewProduct,
+    onSuccess: () => {
+      console.log("Succes");
+      queryClient.invalidateQueries({
+        queryKey: ["productsForTable"],
+      });
+      toast("Product has been added successfully🎉");
+    },
+  });
   const openFormButton = useRef(null);
   const categoryOptionsArray = ["new collection"];
   const typeOptionsArray = [];
+  if (isLoading) return <Spinner />;
   if (products)
     products.map((product) => {
       const categories = product.category.join();
@@ -59,81 +91,121 @@ function ProductForm() {
         typeOptionsArray.push(product.itemType);
     });
 
-  const colorsAvailable =
-    products &&
-    products.flatMap((product) => {
-      return Object.keys(product.variants).sort();
-    });
+  const colorsAvailable = products
+    ? products.flatMap((product) => {
+        if (product?.variants) return Object.keys(product.variants).sort();
+      })
+    : "";
 
   const colorsList = [...new Set(colorsAvailable)];
-  const sizesAvailable = [34, 35, 36, 37, 38, 39, 40, 41];
+  // const sizesAvailable = [34, 35, 36, 37, 38, 39, 40, 41, "no size"];
   const handleOpenForm = () => {
     setOpenForm(true);
     openFormButton.current.style.display = "none";
   };
+  const handleCloseForm = () => {
+    setOpenForm(false);
+    openFormButton.current.style.display = "flex";
+  };
+
+  const onSubmit = (data) => {
+    mutate(data);
+  };
   return (
-    <ProductFormDiv>
+    <ProductFormMain>
       <Button size="full" ref={openFormButton} onClick={handleOpenForm}>
         Add new product
       </Button>
       {openForm && (
-        <Form>
-          <ColumnDiv>
-            <InputField inputValue="id" inputType="text" />
-            <SelectInput
-              optionValue={type}
-              setOptionValue={setType}
-              optionArray={typeOptionsArray}
-              labelTitle="Type"
-            />
-            <SelectInput
-              optionValue={category}
-              setOptionValue={setCategory}
-              optionArray={categoryOptionsArray}
-              labelTitle="Category"
-            />
-            <InputField inputValue="name" inputType="text" />
-            <InputDiv>
-              <label htmlFor="description">Description</label>
-              <textarea
-                id="description"
-                name="description"
-                placeholder="description"
-                rows="4"
-                cols="30"
-              ></textarea>
-            </InputDiv>
-          </ColumnDiv>
-
-          <ColumnDiv>
-            <SelectInput
-              optionValue={color}
-              setOptionValue={setColor}
-              optionArray={colorsList}
-              labelTitle="Colors"
-            />
-            <SelectInput
-              optionValue={size}
-              setOptionValue={setSize}
-              optionArray={sizesAvailable}
-              labelTitle="Sizes"
-            />
-            <InputDiv>
-              <InputField inputValue="price" inputType="number" minValue="0" />
-              <span>EUR</span>
-            </InputDiv>
-            <InputDiv>
-              <InputField
-                inputValue="discount"
-                inputType="number"
-                minValue="0"
+        <FormDiv>
+          <Button type="tertiary" selfalign="end" onClick={handleCloseForm}>
+            <IoMdClose size="15px" />
+          </Button>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <ColumnDiv>
+              <SelectInput
+                optionValue={type}
+                setOptionValue={setType}
+                optionArray={typeOptionsArray}
+                labelTitle="Type"
+                register={{ ...register("itemType") }}
               />
-              <span>%</span>
-            </InputDiv>
-          </ColumnDiv>
-        </Form>
+              <SelectInput
+                optionValue={category}
+                setOptionValue={setCategory}
+                optionArray={categoryOptionsArray}
+                labelTitle="Category"
+                register={{ ...register("category") }}
+              />
+              <InputDiv>
+                <label htmlFor="name">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="name"
+                  {...register("name")}
+                ></input>
+              </InputDiv>
+              <InputDiv>
+                <label htmlFor="description">Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  placeholder="description"
+                  rows="4"
+                  cols="30"
+                  {...register("description")}
+                ></textarea>
+              </InputDiv>
+            </ColumnDiv>
+
+            <ColumnDiv>
+              <SelectInput
+                optionValue={firstColor}
+                setOptionValue={setFirstColor}
+                optionArray={colorsList}
+                labelTitle="First color"
+                register={{ ...register("color1") }}
+              />
+              <SelectInput
+                optionValue={secondColor}
+                setOptionValue={setSecondColor}
+                optionArray={colorsList}
+                labelTitle="Second color"
+                register={{ ...register("color2") }}
+              />
+
+              <InputDiv>
+                <label htmlFor="price">Price</label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  min="0"
+                  {...register("price")}
+                ></input>
+                <span>EUR</span>
+              </InputDiv>
+              <InputDiv>
+                <label htmlFor="discount">Discount</label>
+                <input
+                  type="number"
+                  id="discount"
+                  name="discount"
+                  min="0"
+                  {...register("discount")}
+                ></input>
+                <span>%</span>
+              </InputDiv>
+            </ColumnDiv>
+            <Button selfalign="end">
+              <Submit type="submit" />
+            </Button>
+          </Form>
+        </FormDiv>
       )}
-    </ProductFormDiv>
+    </ProductFormMain>
   );
 }
 
@@ -163,3 +235,16 @@ export default ProductForm;
         placeholder="discount"
         min="0"
       ></input>*/
+//<InputField inputValue="id" inputType="text" />
+/*<InputField
+                inputValue="name"
+                inputType="text"
+                register={{ ...register("name") }}
+              />
+              <SelectInput
+                optionValue={size}
+                setOptionValue={setSize}
+                optionArray={sizesAvailable}
+                labelTitle="Sizes"
+                //register={{ ...register("size") }}
+              />*/
