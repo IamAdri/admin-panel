@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const StyledSidebar = styled.aside`
   background-color: var(--color-blue-50);
-  height: 100vh;
+  min-height: 100vh;
   padding: 2rem;
 `;
 

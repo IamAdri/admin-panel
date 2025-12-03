@@ -25,6 +25,7 @@ function Sorting({ selectedSortOption, setSelectedSortOption }) {
       <option value="descendingPrice">Descending price</option>
       <option value="withDiscount">With discount</option>
       <option value="noDiscount">No discount</option>
+      <option value="recentlyAdded">Recently added</option>
     </Select>
   );
 }

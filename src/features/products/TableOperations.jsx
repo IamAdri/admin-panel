@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import FilterProducts from "../../ui/FilterProducts";
+
 import Sorting from "../../ui/Sorting";
 import { useState } from "react";
+import FilterProducts from "./FilterProducts";
 
 const StyledTableOperations = styled.div`
   display: flex;

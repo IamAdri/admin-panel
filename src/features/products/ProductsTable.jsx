@@ -1,22 +1,86 @@
-import styled from "styled-components";
-import Spinner from "../../ui/Spinner";
-import Button from "../../ui/Button";
-import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import Pagination from "../../ui/Pagination";
 import toast from "react-hot-toast";
 import { useLoadProductsForTable } from "./useLoadProductsForTable";
-import { FaImages } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
-import { useRef } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteProduct } from "../../services/apiProducts";
+import Table from "../../ui/Table";
+import TableHead from "../../ui/TableHead";
+import TableRow from "../../ui/TableRow";
+import TableData from "../../ui/TableData";
+import DescriptionSectionForProduct from "./DescriptionSectionForProduct";
+import List from "../../ui/List";
+import ImagesForColorsOfProduct from "./ImagesForColorsOfProduct";
+import ProductRowActions from "./ProductRowActions";
 
-const Table = styled.table`
+function ProductsTable() {
+  //Loading products for table
+  const { isLoading, products, count, error } = useLoadProductsForTable();
+  //Manage error or awaiting time for loading products for table
+  if (error) toast(error);
+  if (isLoading) return;
+
+  return (
+    <>
+      <Table>
+        <thead>
+          <tr>
+            <TableHead>Name</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead>Colors</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Discount</TableHead>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((product) => {
+            return (
+              <TableRow key={product.id}>
+                <TableData>{product.name}</TableData>
+                <TableData>{product.itemType}</TableData>
+                <TableData>
+                  {product.category.length > 1
+                    ? product.category.map((categoryOption) => {
+                        const option =
+                          categoryOption === "newCollection"
+                            ? "new collection"
+                            : categoryOption;
+                        return (
+                          <List key={(product.id, categoryOption)}>
+                            {option}
+                          </List>
+                        );
+                      })
+                    : product.category}
+                </TableData>
+                <TableData>
+                  <DescriptionSectionForProduct product={product} />
+                </TableData>
+                <TableData>
+                  <ImagesForColorsOfProduct product={product} />
+                </TableData>
+                <TableData>{product.price} EUR</TableData>
+                <TableData>
+                  {!product.discount ? "-" : `${product.discount}%`}
+                </TableData>
+                <ProductRowActions product={product} />
+              </TableRow>
+            );
+          })}
+        </tbody>
+      </Table>
+      <Pagination itemsLength={count} />
+    </>
+  );
+}
+
+export default ProductsTable;
+
+/*const Table = styled.table`
   border: 1px solid var(--color-grey-400);
   border-collapse: collapse;
   text-align: left;
   position: relative;
+  justify-content: center;
 `;
 
 const Th = styled.th`
@@ -43,11 +107,20 @@ const Tr = styled.tr`
 
 const DescriptionDiv = styled.div`
   padding: 3px;
-
+  display: flex;
+  gap: 10px;
+  align-items: end;
   width: 500px;
-  overflow-y: scroll;
 `;
-
+const DescriptionText = styled.p`
+  width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+const DescriptionTextModal = styled.p`
+  padding: 0px 10px 10px 10px;
+`;
 const Li = styled.li`
   list-style-type: none;
   text-align: start;
@@ -65,23 +138,21 @@ const TdForEditAnDelete = styled.td`
   border: 1px solid var(--color-grey-400);
 `;
 const DivForButtons = styled.div`
-  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 5px;
+  padding: 5px 0px;
 `;
-const ImagesModal = styled.div`
-  display: none;
+const EditDiv = styled.div`
   position: absolute;
-  padding: 3px;
   top: 5%;
   right: 25%;
-  left: 25%;
-  border: 1px solid;
+  left: 15%;
   width: fit-content;
   background-color: var(--color-grey-50);
   flex-direction: column;
 `;
+
 const ImagesList = styled.ul`
   display: grid;
   padding: 25px 55px;
@@ -100,6 +171,19 @@ function ProductsTable() {
   const { isLoading, products, count, error } = useLoadProductsForTable();
   const nameRef = useRef(null);
   const queryClient = useQueryClient();
+  const { mutate: mutateForEdit } = useMutation({
+    mutationFn: addNewProduct,
+    onSuccess: () => {
+      console.log("Succes");
+      queryClient.invalidateQueries({
+        queryKey: ["productsForTable"],
+      });
+      toast("Product has been added successfully🎉");
+    },
+    onError: (error) => {
+      toast(`Error: ${error.message} Please try again!💥`);
+    },
+  });
   const { mutate } = useMutation({
     mutationFn: deleteProduct,
     onSuccess: () => {
@@ -107,24 +191,36 @@ function ProductsTable() {
       queryClient.invalidateQueries({
         queryKey: ["productsForTable"],
       });
-      toast("Product has been deleted successfully.");
+      toast("Product has been deleted successfully🎉");
     },
   });
   if (error) toast(error);
   if (isLoading) return <Spinner />;
+
   const handleOpenImages = (e) => {
     const images = e.target.closest("li").lastChild;
     images.style.display = "flex";
   };
+
   const handleCloseImages = (e) => {
     const images = e.target.closest("div");
     console.log(images);
     images.style.display = "none";
   };
+  const handleOpenDescription = (e) => {
+    console.log(e.target.nextSibling);
+    const description = e.target.nextSibling;
+    description.style.display = "flex";
+  };
+  const handleCloseDescription = (e) => {
+    const description = e.target.closest("div");
+    description.style.display = "none";
+  };
   const handleDeleteProduct = (e) => {
     const productName = e.target.closest("tr").firstChild.textContent;
     mutate(productName);
   };
+
   return (
     <>
       <Table>
@@ -150,17 +246,32 @@ function ProductsTable() {
                 <Td>
                   {product.category.length > 1
                     ? product.category.map((categoryOption) => {
+                        const option =
+                          categoryOption === "newCollection"
+                            ? "new collection"
+                            : categoryOption;
+                        console.log(option);
                         return (
-                          <Li key={(product.id, categoryOption)}>
-                            {categoryOption}
-                          </Li>
+                          <Li key={(product.id, categoryOption)}>{option}</Li>
                         );
                       })
                     : product.category}
                 </Td>
 
                 <Td>
-                  <DescriptionDiv>{product.description}</DescriptionDiv>
+                  <DescriptionDiv>
+                    <DescriptionText>{product.description}</DescriptionText>
+
+                    <Button type="tertiary" onClick={handleOpenDescription}>
+                      Show more
+                    </Button>
+
+                    <Modal handleCloseModal={handleCloseDescription}>
+                      <DescriptionTextModal>
+                        {product.description}
+                      </DescriptionTextModal>
+                    </Modal>
+                  </DescriptionDiv>
                 </Td>
                 <Td>
                   <UlForColors>
@@ -171,14 +282,7 @@ function ProductsTable() {
                           <Button type="tertiary" onClick={handleOpenImages}>
                             <FaImages size={17} />
                           </Button>
-                          <ImagesModal>
-                            <Button
-                              type="tertiary"
-                              selfalign="end"
-                              onClick={handleCloseImages}
-                            >
-                              <IoMdClose size="15px" />
-                            </Button>
+                          <Modal handleCloseModal={handleCloseImages}>
                             <ImagesList>
                               {product.variants[color].length > 0
                                 ? product.variants[color].map((image) => {
@@ -194,7 +298,7 @@ function ProductsTable() {
                                   })
                                 : "No images for this color."}
                             </ImagesList>
-                          </ImagesModal>
+                          </Modal>
                         </Li>
                       );
                     })}
@@ -204,9 +308,10 @@ function ProductsTable() {
                 <Td>{!product.discount ? "-" : `${product.discount}%`}</Td>
                 <TdForEditAnDelete>
                   <DivForButtons>
-                    <Button size="medium" selfalign="end">
+                    <Button size="medium">
                       <span>Edit</span> <FaRegEdit />
                     </Button>
+
                     <Button
                       type="secondary"
                       size="medium"
@@ -228,3 +333,4 @@ function ProductsTable() {
 }
 
 export default ProductsTable;
+*/

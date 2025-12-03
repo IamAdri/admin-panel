@@ -32,7 +32,7 @@ export async function getProductsForTable({
   //Divide products on pages
   if (page) query = query.range(from, to);
 
-  //Display products based on srting option
+  //Display products based on sorting option
   if (selectedSortingOption === "ascendingPrice")
     query = query.order("price", { ascending: true });
   if (selectedSortingOption === "descendingPrice")
@@ -43,15 +43,16 @@ export async function getProductsForTable({
     query = query.not("discount", "is", null);
   if (selectedSortingOption === "noDiscount")
     query = query.is("discount", null);
+  if (selectedSortingOption === "recentlyAdded")
+    query = query.order("created_at", { ascending: false });
 
   const { data, error, count } = await query;
-
   if (error) throw new Error("Could not load products for table!");
 
   return { data, count };
 }
 
-export async function getProductsForFilterAndForm() {
+export async function getAllProducts() {
   const { data, error } = await supabase.from("items").select("*");
 
   if (error) throw new Error("Could not load products for filter!");
@@ -59,17 +60,36 @@ export async function getProductsForFilterAndForm() {
   return data;
 }
 
+export async function getAllProductNames() {
+  const { data, error } = await supabase.from("items").select("name");
+
+  if (error) throw new Error("Could not load names of existing products!");
+  return data;
+}
+
 export async function addNewProduct(formData) {
-  const category = formData.category.split(",");
-  console.log(formData);
+  //Find out if there is a product already with name from form an return an error if so
+  const existingNamesArr = [];
+  const existingNames = await getAllProductNames();
+  existingNames.map((name) => {
+    return existingNamesArr.push(Object.values(name));
+  });
+  if (existingNamesArr.flat().includes(formData.name))
+    throw new Error(
+      "This name has been used already. Please use another name!"
+    );
+  //Check if new product is new collection or not
+  let category = [];
+  formData.newCollection === "yes"
+    ? category.push(formData.category, "newCollection")
+    : category.push(formData.category);
+  //Create object for variants column
   const firstColor = formData.color1;
   const secondColor = formData.color2;
   let variants = {
     [firstColor]: [],
     [secondColor]: [],
   };
-
-  console.log(variants);
 
   const { data, error } = await supabase
     .from("items")
@@ -90,7 +110,54 @@ export async function addNewProduct(formData) {
   return data;
 }
 
+export async function editProduct(formData) {
+  console.log(formData);
+  //Check if updated product is new collection or not
+  let category = [];
+  formData.newCollection === "yes"
+    ? category.push(formData.category, "newCollection")
+    : category.push(formData.category);
+  //Create object for variants column
+  const firstColor = formData.color1;
+  const secondColor = formData.color2;
+  let variants = {
+    [firstColor]: [],
+    [secondColor]: [],
+  };
+
+  const { error } = await supabase
+    .from("items")
+    .update({
+      name: formData.name,
+      category: category,
+      description: formData.description,
+      variants: variants,
+      price: Number(formData.price),
+      discount: Number(formData.discount),
+      itemType: formData.itemType,
+    })
+    .eq("id", formData.productID)
+    .select();
+
+  if (error) throw new Error("Could not update new product!");
+}
+
 export async function deleteProduct(name) {
   const { error } = await supabase.from("items").delete().eq("name", name);
   if (error) throw new Error("Could not delete the product!");
+}
+
+export async function getOrders() {
+  let { data, error } = await supabase.from("orders").select("*");
+  if (error) throw new Error("Could not load the orders!");
+  return data;
+}
+
+export async function getCustomerDetails(email) {
+  let { data, error } = await supabase
+    .from("userDetails")
+    .eq("email", email)
+    .select();
+  if (error) throw new Error("Could not load customers` details!");
+  return data;
 }

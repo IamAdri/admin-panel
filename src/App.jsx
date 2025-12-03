@@ -35,7 +35,13 @@ function App() {
         </Routes>
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          style: {
+            width: "500px",
+          },
+        }}
+      />
     </QueryClientProvider>
   );
 }
