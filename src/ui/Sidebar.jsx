@@ -45,10 +45,10 @@ function Sidebar() {
             <StyledNavLink to="orders">Orders</StyledNavLink>
           </li>
           <li>
-            <StyledNavLink to="login">Login</StyledNavLink>
+            <StyledNavLink to="myaccount">My account</StyledNavLink>
           </li>
           <li>
-            <StyledNavLink to="signup">Sign Up</StyledNavLink>
+            <StyledNavLink to="signout">Sign Out</StyledNavLink>
           </li>
         </NavList>
       </nav>

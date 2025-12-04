@@ -21,6 +21,7 @@ const DivForButtons = styled.div`
 
 function ProductRowActions({ product }) {
   const modalRef = useRef(null);
+  //Mutate function for editing product details
   const queryClient = useQueryClient();
   const { mutate: mutateForEdit } = useMutation({
     mutationFn: editProduct,
@@ -35,9 +36,16 @@ function ProductRowActions({ product }) {
       toast(`Error: ${error.message} Please try again!💥`);
     },
   });
+  const handleOpenEditForm = () => {
+    const editForm = modalRef.current.firstChild;
+    editForm.style.display = "flex";
+  };
+  const handleCloseEditForm = () => {
+    const editForm = modalRef.current.firstChild;
+    editForm.style.display = "none";
+  };
 
   //Mutate function for deleting product
-  //const queryClient = useQueryClient();
   const { mutate: mutateForDelete } = useMutation({
     mutationFn: deleteProduct,
     onSuccess: () => {
@@ -52,17 +60,7 @@ function ProductRowActions({ product }) {
     mutateForDelete(productName);
   };
 
-  //Mutate function for editing product
-  const handleOpenEditForm = (e) => {
-    const productName = e.target.closest("tr").firstChild.textContent;
-    console.log(modalRef.current.firstChild);
-    const editForm = modalRef.current.firstChild;
-    editForm.style.display = "flex";
-  };
-  const handleCloseEditForm = () => {
-    const editForm = modalRef.current.firstChild;
-    editForm.style.display = "none";
-  };
+  //Submit edited product
   const onSubmit = (data) => {
     mutateForEdit(data);
     handleCloseEditForm();

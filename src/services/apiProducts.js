@@ -156,8 +156,9 @@ export async function getOrders() {
 export async function getCustomerDetails(email) {
   let { data, error } = await supabase
     .from("userDetails")
-    .eq("email", email)
-    .select();
-  if (error) throw new Error("Could not load customers` details!");
+    .select()
+    .eq("email", email);
+
+  if (error) throw new Error("Could not load customer`s details!");
   return data;
 }
