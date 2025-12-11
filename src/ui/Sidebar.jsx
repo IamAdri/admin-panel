@@ -15,7 +15,7 @@ const NavList = styled.ul`
 `;
 
 const StyledNavLink = styled(NavLink)`
-  display: block;
+  display: "block";
   text-decoration: none;
   border-radius: 5px;
   color: var(--color-grey-800);
@@ -48,7 +48,7 @@ function Sidebar() {
             <StyledNavLink to="myaccount">My account</StyledNavLink>
           </li>
           <li>
-            <StyledNavLink to="signout">Sign Out</StyledNavLink>
+            <StyledNavLink to="logout">Log Out</StyledNavLink>
           </li>
         </NavList>
       </nav>

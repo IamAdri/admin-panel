@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { addNewProduct } from "../services/apiProducts";
+import { addNewProduct } from "../../services/apiProducts";
 import styled from "styled-components";
-import Button from "./Button";
+import Button from "../../ui/Button";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
-import Form from "./Form";
+import Form from "../../ui/Form";
 
 const ProductFormMain = styled.div`
   width: fit-content;
@@ -23,7 +23,7 @@ const FormMain = styled.div`
   padding: 3px 3px 9px 3px;
 `;
 
-function ProductForm() {
+function AddProductForm() {
   const [openForm, setOpenForm] = useState(false);
   const { reset } = useForm();
   const openFormButton = useRef(null);
@@ -79,4 +79,4 @@ function ProductForm() {
   );
 }
 
-export default ProductForm;
+export default AddProductForm;

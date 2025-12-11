@@ -42,7 +42,6 @@ function Form({ product = null, onSubmit = null }) {
   const [firstColor, setFirstColor] = useState(colors ? colors[0] : "beige");
   const [secondColor, setSecondColor] = useState(colors ? colors[1] : "beige");
   if (isLoading) return;
-  console.log(category);
 
   const categoryOptionsArray = [];
   const newCollectionOptions = ["no", "yes"];
@@ -133,6 +132,16 @@ function Form({ product = null, onSubmit = null }) {
           labelTitle="Second color"
           register={{ ...register("color2") }}
         />
+        <InputDiv>
+          <label htmlFor="images">Images</label>
+          <input
+            type="file"
+            id="images"
+            name="images"
+            multiple
+            {...register("images")}
+          ></input>
+        </InputDiv>
         <InputDiv>
           <label htmlFor="price">Price</label>
           <input

@@ -1,5 +1,5 @@
 import { ITEMS_PER_PAGE } from "../utils/constants";
-import supabase from "./supabase";
+import supabase, { supabaseUrl } from "./supabase";
 
 export async function getProductsForTable({
   page,
@@ -86,10 +86,23 @@ export async function addNewProduct(formData) {
   //Create object for variants column
   const firstColor = formData.color1;
   const secondColor = formData.color2;
+  console.log(formData.images);
+  const imagesPaths = [];
+  const singleImg = formData.images[0];
+  const singlePath = `${supabaseUrl}/storage/v1/object/public/${formData.category}/${singleImg.name}`;
+  const imagesArray = Object.values(formData.images);
+  imagesArray.map((image) => {
+    imagesPaths.push(
+      `${supabaseUrl}/storage/v1/object/public/${formData.category}/${image.name}`
+    );
+  });
+  console.log(imagesPaths);
   let variants = {
-    [firstColor]: [],
+    [firstColor]: [singlePath],
     [secondColor]: [],
   };
+
+  console.log(formData.category, typeof formData.category);
 
   const { data, error } = await supabase
     .from("items")
@@ -105,8 +118,28 @@ export async function addNewProduct(formData) {
       },
     ])
     .select();
-
   if (error) throw new Error("Could not add new product!");
+  /*
+  for (const image of imagesArray) {
+    for (const imagePath of imagesPaths) {
+      const { error: storageUploadError } = await supabase.storage
+        .from({ bucketName })
+        .upload(imagePath, image);
+
+      console.log(image, imagePath, image.name);
+
+      if (storageUploadError)
+        throw new Error("Could not upload images in storage bucket!");
+    }
+  }
+*/
+  //https://ydghorluedeqhuwnokqn.supabase.co/storage/v1/object/public/heels/testblue.jpg
+  const bucketName = formData.category;
+  console.log(bucketName);
+  const { error: storageUploadError } = await supabase.storage
+    .from(formData.category)
+    .upload(singleImg.name, singleImg);
+
   return data;
 }
 

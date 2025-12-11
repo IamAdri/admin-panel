@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ProductsTable from "../features/products/ProductsTable";
 import TableOperations from "../features/products/TableOperations";
-import ProductForm from "../ui/ProductForm";
+import AddProductForm from "../features/products/AddProductForm";
 
 const MainDiv = styled.div`
   display: flex;
@@ -14,7 +14,7 @@ function Products() {
     <MainDiv>
       <TableOperations />
       <ProductsTable />
-      <ProductForm />
+      <AddProductForm />
     </MainDiv>
   );
 }

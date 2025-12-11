@@ -17,6 +17,7 @@ const DescriptionText = styled.p`
 `;
 const DescriptionTextModal = styled.p`
   padding: 0px 10px 10px 10px;
+  width: 450px;
 `;
 
 function DescriptionSectionForProduct({ product }) {

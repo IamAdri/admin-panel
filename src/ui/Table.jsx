@@ -1,10 +1,11 @@
 import styled from "styled-components";
 
 const MainDiv = styled.table`
+  width: max-content;
   border: 1px solid var(--color-grey-400);
   border-collapse: collapse;
   text-align: left;
-  position: relative;
+
   justify-content: center;
 `;
 

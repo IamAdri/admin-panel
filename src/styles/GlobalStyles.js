@@ -6,6 +6,7 @@ const GlobalStyles = createGlobalStyle`
 --color-blue-700:oklch(50% 0.134 242.749);
 --color-blue-600:oklch(58.8% 0.158 241.966);
 --color-blue-50:oklch(97% 0.014 254.604);
+--color-blue-400:oklch(70.7% 0.165 254.624);
 /*Grey*/
 --color-grey-800:oklch(27.8% 0.033 256.848);
 --color-grey-50:oklch(98.5% 0.002 247.839);

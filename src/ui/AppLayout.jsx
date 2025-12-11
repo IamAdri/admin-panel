@@ -9,16 +9,17 @@ const StyledAppLayout = styled.div`
 `;
 
 const Main = styled.main`
-  background-color: var(--color-grey-50);
   padding: 4rem 5rem 4rem;
   color: var(--color-grey-800);
 `;
 
 function AppLayout() {
+  const isLoginPage = location.pathname === "/login";
+  console.log(isLoginPage);
   return (
     <StyledAppLayout>
       <Header />
-      <Sidebar />
+      {sessionStorage.length === 0 ? null : <Sidebar />}
       <Main>
         <Outlet />
       </Main>

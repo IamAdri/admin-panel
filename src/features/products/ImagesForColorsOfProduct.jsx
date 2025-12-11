@@ -44,10 +44,11 @@ function ImagesForColorsOfProduct({ product }) {
             <Button type="tertiary" onClick={handleOpenImages}>
               <FaImages size={17} />
             </Button>
-            <Modal handleCloseModal={handleCloseImages}>
+            <Modal layout="pictures" handleCloseModal={handleCloseImages}>
               <ImagesList>
                 {product.variants[color].length > 0
                   ? product.variants[color].map((image) => {
+                      console.log(image);
                       return (
                         <ImageElement key={image}>
                           <img

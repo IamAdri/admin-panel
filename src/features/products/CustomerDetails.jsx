@@ -18,7 +18,7 @@ function CustomerDetails({ email }) {
     queryFn: () => getCustomerDetails(email),
   });
   if (isLoadingCustomersDetails) return;
-
+  console.log(customersDetails);
   return (
     <>
       {customersDetails.map((user) => {

@@ -11,15 +11,16 @@ import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import CustomerDetails from "../features/products/CustomerDetails";
 
+const MainDiv = styled.div`
+  max-width: 100vw;
+  min-width: 0;
+  width: 100%;
+  overflow-x: auto;
+`;
 const OrderDiv = styled.div`
   display: flex;
 `;
-const ProductsSection = styled.p`
-  width: 80%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
+
 const NameSpan = styled.span`
   font-weight: 500;
 `;
@@ -51,70 +52,64 @@ function Orders() {
   };
 
   return (
-    <Table>
-      <thead>
-        <tr>
-          <TableHead>Customer email</TableHead>
-          <TableHead>Customer address</TableHead>
-          <TableHead>Customer phone</TableHead>
-          <TableHead>Order</TableHead>
-          <TableHead>Total price</TableHead>
-          <TableHead>Payment method</TableHead>
-          <TableHead>Order placed date</TableHead>
-          <TableHead>Delivery Date</TableHead>
-          <TableHead>Delivery status</TableHead>
-        </tr>
-      </thead>
-      <tbody>
-        {orders.map((order) => {
-          return (
-            <TableRow key={order.id}>
-              <TableData>{order.email}</TableData>
-              <CustomerDetails email={order.email} />
-              <TableData>
-                <OrderDiv>
-                  <ProductsSection>
-                    <NameSpan>{order.products[0].name}:</NameSpan>{" "}
-                    {`size:
-                    ${order.products[0].size || " no size"}, color:
-                    ${order.products[0].color}, quantity:
-                    ${order.products[0].quantity}, price per quantity:
-                    ${order.products[0].pricePerQuantity} EUR`}
-                  </ProductsSection>
-                  <Button type="tertiary" onClick={handleOpenProducts}>
-                    Show products
-                  </Button>
-                  <Modal handleCloseModal={handleCloseProducts}>
-                    <ProductsModal>
-                      {order.products.map((product) => {
-                        return (
-                          <List key={product.name}>
-                            <NameSpan>{product.name}:</NameSpan>{" "}
-                            {`size:
+    <MainDiv>
+      <Table>
+        <thead>
+          <tr>
+            <TableHead>Customer email</TableHead>
+            <TableHead>Customer address</TableHead>
+            <TableHead>Customer phone</TableHead>
+            <TableHead>Order</TableHead>
+            <TableHead>Total price</TableHead>
+            <TableHead>Pay option</TableHead>
+            <TableHead>Placed on</TableHead>
+            <TableHead>Delivery Date</TableHead>
+            <TableHead>Delivery status</TableHead>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((order) => {
+            return (
+              <TableRow key={order.id}>
+                <TableData>{order.email}</TableData>
+                <CustomerDetails email={order.email} />
+                <TableData>
+                  <OrderDiv>
+                    <Button type="tertiary" onClick={handleOpenProducts}>
+                      Show products
+                    </Button>
+                    <Modal handleCloseModal={handleCloseProducts}>
+                      <ProductsModal>
+                        {order.products.map((product) => {
+                          return (
+                            <List key={product.name}>
+                              <NameSpan>{product.name}:</NameSpan>{" "}
+                              {`size:
                             ${product.size || " no size"}, color: ${
-                              product.color
-                            }, quantity:
+                                product.color
+                              }, quantity:
                             ${product.quantity}, price per quantity:
                             ${product.pricePerQuantity} EUR`}
-                          </List>
-                        );
-                      })}
-                    </ProductsModal>
-                  </Modal>
-                </OrderDiv>
-              </TableData>
-              <TableData>{order.totalPrice} EUR</TableData>
-              <TableData>
-                {order.paymentMethod === "cashPayment" ? "cash" : "card"}
-              </TableData>
-              <TableData>{order.created_at}</TableData>
-              <TableData>{order.deliveryDate}</TableData>
-              <TableData>{order.status}</TableData>
-            </TableRow>
-          );
-        })}
-      </tbody>
-    </Table>
+                            </List>
+                          );
+                        })}
+                      </ProductsModal>
+                    </Modal>
+                  </OrderDiv>
+                </TableData>
+                <TableData>{order.totalPrice} EUR</TableData>
+                <TableData>
+                  {order.paymentMethod === "cashPayment" ? "cash" : "card"}
+                </TableData>
+                <TableData>{order.created_at}</TableData>
+                <TableData>{order.deliveryDate}</TableData>
+                <TableData>{order.status}</TableData>
+              </TableRow>
+            );
+          })}
+        </tbody>
+      </Table>
+    </MainDiv>
   );
 }
 
