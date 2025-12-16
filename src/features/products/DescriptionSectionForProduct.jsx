@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Button from "../../ui/Button";
-import Modal from "../../ui/Modal";
+import ModalLayout from "../../ui/ModalLayout";
+import CloseButton from "../../ui/CloseButton";
 
 const DescriptionDiv = styled.div`
   padding: 3px;
@@ -36,9 +37,10 @@ function DescriptionSectionForProduct({ product }) {
       <Button type="tertiary" onClick={handleOpenDescription}>
         Show more
       </Button>
-      <Modal handleCloseModal={handleCloseDescription}>
+      <ModalLayout>
+        <CloseButton handleCloseModal={handleCloseDescription} />
         <DescriptionTextModal>{product.description}</DescriptionTextModal>
-      </Modal>
+      </ModalLayout>
     </DescriptionDiv>
   );
 }

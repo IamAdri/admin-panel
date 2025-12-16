@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import Button from "../../ui/Button";
-import Modal from "../../ui/Modal";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -8,6 +7,8 @@ import { deleteProduct, editProduct } from "../../services/apiProducts";
 import toast from "react-hot-toast";
 import { useRef } from "react";
 import Form from "../../ui/Form";
+import ModalLayout from "../../ui/ModalLayout";
+import CloseButton from "../../ui/CloseButton";
 
 const TdForEditAnDelete = styled.td`
   border: 1px solid var(--color-grey-400);
@@ -72,9 +73,10 @@ function ProductRowActions({ product }) {
           <span>Edit</span> <FaRegEdit />
         </Button>
         <div ref={modalRef}>
-          <Modal handleCloseModal={handleCloseEditForm}>
+          <ModalLayout position="secondary" backgroundcolor="grey">
+            <CloseButton handleCloseModal={handleCloseEditForm} />
             <Form product={product} onSubmit={onSubmit} />
-          </Modal>
+          </ModalLayout>
         </div>
         <Button type="secondary" size="medium" onClick={handleDeleteProduct}>
           <span>Delete</span>
@@ -86,3 +88,7 @@ function ProductRowActions({ product }) {
 }
 
 export default ProductRowActions;
+/* 
+<Modal handleCloseModal={handleCloseEditForm}>
+            <Form product={product} onSubmit={onSubmit} />
+          </Modal>*/

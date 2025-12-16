@@ -1,8 +1,9 @@
 import { FaImages } from "react-icons/fa";
 import Button from "../../ui/Button";
-import Modal from "../../ui/Modal";
 import List from "../../ui/List";
 import styled from "styled-components";
+import ModalLayout from "../../ui/ModalLayout";
+import CloseButton from "../../ui/CloseButton";
 
 const UlForColors = styled.ul`
   display: flex;
@@ -26,15 +27,18 @@ function ImagesForColorsOfProduct({ product }) {
   const colors = Object.keys(product.variants);
 
   const handleOpenImages = (e) => {
+    e.preventDefault();
     const images = e.target.closest("li").lastChild;
     images.style.display = "flex";
   };
 
   const handleCloseImages = (e) => {
+    e.preventDefault();
     const images = e.target.closest("div");
     console.log(images);
     images.style.display = "none";
   };
+
   return (
     <UlForColors>
       {colors.map((color) => {
@@ -44,11 +48,11 @@ function ImagesForColorsOfProduct({ product }) {
             <Button type="tertiary" onClick={handleOpenImages}>
               <FaImages size={17} />
             </Button>
-            <Modal layout="pictures" handleCloseModal={handleCloseImages}>
+            <ModalLayout>
+              <CloseButton handleCloseModal={handleCloseImages} />
               <ImagesList>
                 {product.variants[color].length > 0
                   ? product.variants[color].map((image) => {
-                      console.log(image);
                       return (
                         <ImageElement key={image}>
                           <img
@@ -61,7 +65,7 @@ function ImagesForColorsOfProduct({ product }) {
                     })
                   : "No images for this color."}
               </ImagesList>
-            </Modal>
+            </ModalLayout>
           </List>
         );
       })}

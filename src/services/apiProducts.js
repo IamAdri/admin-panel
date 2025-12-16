@@ -66,6 +66,57 @@ export async function getAllProductNames() {
   if (error) throw new Error("Could not load names of existing products!");
   return data;
 }
+async function uploadImages(data) {
+  //Select colors and images file from formData
+  const firstColor = data.color1;
+  const secondColor = data.color2;
+  const imagesArrayFirstColor = Object.values(data.imagesFirstColor);
+  const imagesArraySecondColor = Object.values(data.imagesSecondColor);
+  let imageNamesFirstColor = [];
+  let imageNamesSecondColor = [];
+  //Upload in storage bucket images for first color and add names with Math.random in array
+  for (const image of imagesArrayFirstColor) {
+    const imageName = `${Math.random()}-${image.name}`;
+    imageNamesFirstColor.push(imageName);
+    const { error: storageUploadErrorFirstColor } = await supabase.storage
+      .from(data.category)
+      .upload(imageName, image);
+    if (storageUploadErrorFirstColor)
+      throw new Error(
+        "Could not upload images in storage bucket for first color!"
+      );
+  }
+  //Upload in storage bucket images for second color and add names with Math.random in array
+  for (const image of imagesArraySecondColor) {
+    const imageName = `${Math.random()}-${image.name}`;
+    imageNamesSecondColor.push(imageName);
+    const { error: storageUploadErrorSecondColor } = await supabase.storage
+      .from(data.category)
+      .upload(imageName, image);
+    if (storageUploadErrorSecondColor)
+      throw new Error(
+        "Could not upload images in storage bucket for second color!"
+      );
+  }
+  //Create paths of images for table column.
+  let imagesPathsFirstColor = [];
+  let imagesPathsSecondColor = [];
+  imageNamesFirstColor.map((name) => {
+    imagesPathsFirstColor.push(
+      `${supabaseUrl}/storage/v1/object/public/${data.category}/${name}`
+    );
+  });
+  imageNamesSecondColor.map((name) => {
+    imagesPathsSecondColor.push(
+      `${supabaseUrl}/storage/v1/object/public/${data.category}/${name}`
+    );
+  });
+  let variants = {
+    [firstColor]: imagesPathsFirstColor,
+    [secondColor]: imagesPathsSecondColor,
+  };
+  return variants;
+}
 
 export async function addNewProduct(formData) {
   //Find out if there is a product already with name from form an return an error if so
@@ -83,26 +134,9 @@ export async function addNewProduct(formData) {
   formData.newCollection === "yes"
     ? category.push(formData.category, "newCollection")
     : category.push(formData.category);
-  //Create object for variants column
-  const firstColor = formData.color1;
-  const secondColor = formData.color2;
-  console.log(formData.images);
-  const imagesPaths = [];
-  const singleImg = formData.images[0];
-  const singlePath = `${supabaseUrl}/storage/v1/object/public/${formData.category}/${singleImg.name}`;
-  const imagesArray = Object.values(formData.images);
-  imagesArray.map((image) => {
-    imagesPaths.push(
-      `${supabaseUrl}/storage/v1/object/public/${formData.category}/${image.name}`
-    );
-  });
-  console.log(imagesPaths);
-  let variants = {
-    [firstColor]: [singlePath],
-    [secondColor]: [],
-  };
 
-  console.log(formData.category, typeof formData.category);
+  //Create object for variants column
+  const variants = await uploadImages(formData);
 
   const { data, error } = await supabase
     .from("items")
@@ -119,27 +153,6 @@ export async function addNewProduct(formData) {
     ])
     .select();
   if (error) throw new Error("Could not add new product!");
-  /*
-  for (const image of imagesArray) {
-    for (const imagePath of imagesPaths) {
-      const { error: storageUploadError } = await supabase.storage
-        .from({ bucketName })
-        .upload(imagePath, image);
-
-      console.log(image, imagePath, image.name);
-
-      if (storageUploadError)
-        throw new Error("Could not upload images in storage bucket!");
-    }
-  }
-*/
-  //https://ydghorluedeqhuwnokqn.supabase.co/storage/v1/object/public/heels/testblue.jpg
-  const bucketName = formData.category;
-  console.log(bucketName);
-  const { error: storageUploadError } = await supabase.storage
-    .from(formData.category)
-    .upload(singleImg.name, singleImg);
-
   return data;
 }
 
@@ -151,13 +164,9 @@ export async function editProduct(formData) {
     ? category.push(formData.category, "newCollection")
     : category.push(formData.category);
   //Create object for variants column
-  const firstColor = formData.color1;
-  const secondColor = formData.color2;
-  let variants = {
-    [firstColor]: [],
-    [secondColor]: [],
-  };
 
+  const variants = formData?.variants && (await uploadImages(formData));
+  console.log(variants);
   const { error } = await supabase
     .from("items")
     .update({
@@ -195,3 +204,71 @@ export async function getCustomerDetails(email) {
   if (error) throw new Error("Could not load customer`s details!");
   return data;
 }
+
+/*
+  //Create object for variants column
+  const firstColor = formData.color1;
+  const secondColor = formData.color2;
+  const imagesPathsFirstColor = [];
+  const imagesPathsSecondColor = [];
+  const imagesArrayFirstColor = Object.values(formData.imagesFirstColor);
+  const changetoRandomNames = imagesArrayFirstColor.forEach((image) => {
+    const imageName = `${Math.random()}-${image.name}`;
+  });
+  console.log(changetoRandomNames);
+
+  imagesArrayFirstColor.map((image) => {
+    // const imageName = `${Math.random()}-${image.name}`;
+    imagesPathsFirstColor.push(
+      `${supabaseUrl}/storage/v1/object/public/${formData.category}/${image.name}`
+    );
+  });
+  const imagesArraySecondColor = Object.values(formData.imagesSecondColor);
+  imagesArraySecondColor.map((image) => {
+    //  const imageName = `${Math.random()}-${image.name}`;
+    imagesPathsSecondColor.push(
+      `${supabaseUrl}/storage/v1/object/public/${formData.category}/${image.name}`
+    );
+  });
+  let variants = {
+    [firstColor]: imagesPathsFirstColor,
+    [secondColor]: imagesPathsSecondColor,
+  };
+
+  const { data, error } = await supabase
+    .from("items")
+    .insert([
+      {
+        name: formData.name,
+        category: category,
+        description: formData.description,
+        variants: variants,
+        price: Number(formData.price),
+        discount: Number(formData.discount),
+        itemType: formData.itemType,
+      },
+    ])
+    .select();
+  if (error) throw new Error("Could not add new product!");
+  console.log(error);
+  for (const image of imagesArrayFirstColor) {
+    const { error: storageUploadErrorFirstColor } = await supabase.storage
+      .from(formData.category)
+      .upload(image.name, image);
+    if (storageUploadErrorFirstColor)
+      throw new Error(
+        "Could not upload images in storage bucket for first color!"
+      );
+  }
+  for (const image of imagesArraySecondColor) {
+    const { error: storageUploadErrorSecondColor } = await supabase.storage
+      .from(formData.category)
+      .upload(image.name, image);
+    if (storageUploadErrorSecondColor)
+      throw new Error(
+        "Could not upload images in storage bucket for second color!"
+      );
+  }
+
+  return data;
+  */

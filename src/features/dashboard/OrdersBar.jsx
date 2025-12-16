@@ -8,13 +8,13 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
 } from "recharts";
 import { getOrders } from "../../services/apiDashboard";
 import Spinner from "../../ui/Spinner";
 import { eachMonthOfInterval, format, subMonths } from "date-fns";
 import Heading from "../../ui/Heading";
 import styled from "styled-components";
+import toast from "react-hot-toast";
 
 const MainDiv = styled.div`
   display: flex;
@@ -38,8 +38,9 @@ function OrdersBar() {
     queryKey: ["ordersRevenue"],
     queryFn: getOrders,
   });
+  if (error) toast(error);
   if (isLoading) return <Spinner />;
-
+  console.log(ordersData);
   const last6Months = eachMonthOfInterval({
     start: subMonths(new Date(), 6),
     end: subMonths(new Date(), 1),
@@ -47,9 +48,10 @@ function OrdersBar() {
 
   const groupedOrdersByMonth = JSON.parse(
     JSON.stringify(
-      Object.groupBy(ordersData, ({ deliveryDate }) =>
-        format(deliveryDate, "MMMM")
-      )
+      Object.groupBy(ordersData, ({ deliveryDate }) => {
+        if (deliveryDate === null) return;
+        return format(deliveryDate, "MMMM");
+      })
     )
   );
   console.log(groupedOrdersByMonth);
@@ -61,9 +63,7 @@ function OrdersBar() {
           (acc, order) => acc + order.totalPrice,
           0
         );
-        return { name: month, "revenue per month": revenuePerMonth };
-      } else {
-        return "";
+        return { name: month, revenue: revenuePerMonth };
       }
     }
   );
@@ -94,7 +94,7 @@ function OrdersBar() {
         <Tooltip />
         <Legend name="last 6 months" />
         <Bar
-          dataKey="revenue per month"
+          dataKey="revenue"
           fill="#8884d8"
           activeBar={<Rectangle fill="#83a6ed" />}
         />

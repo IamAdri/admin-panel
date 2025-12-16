@@ -8,8 +8,9 @@ import Spinner from "../ui/Spinner";
 import List from "../ui/List";
 import styled from "styled-components";
 import Button from "../ui/Button";
-import Modal from "../ui/Modal";
 import CustomerDetails from "../features/products/CustomerDetails";
+import ModalLayout from "../ui/ModalLayout";
+import CloseButton from "../ui/CloseButton";
 
 const MainDiv = styled.div`
   max-width: 100vw;
@@ -78,7 +79,8 @@ function Orders() {
                     <Button type="tertiary" onClick={handleOpenProducts}>
                       Show products
                     </Button>
-                    <Modal handleCloseModal={handleCloseProducts}>
+                    <ModalLayout>
+                      <CloseButton handleCloseModal={handleCloseProducts} />
                       <ProductsModal>
                         {order.products.map((product) => {
                           return (
@@ -94,7 +96,7 @@ function Orders() {
                           );
                         })}
                       </ProductsModal>
-                    </Modal>
+                    </ModalLayout>
                   </OrderDiv>
                 </TableData>
                 <TableData>{order.totalPrice} EUR</TableData>

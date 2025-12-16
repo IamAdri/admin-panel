@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { FaRegEye } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
 import { updateCredentials } from "../services/apiAuth";
+import { PiEyeClosedBold } from "react-icons/pi";
 
 const MainDiv = styled.div`
   display: flex;
@@ -49,7 +50,8 @@ const HiddenInput = styled.input`
 function MyAccount() {
   const { register, handleSubmit } = useForm();
   const [changeAdminDetails, setChangeAdminDetails] = useState(false);
-  const [hidePassword, setHidePassword] = useState(false);
+  const [changeAdminCredentials, setChangeAdminCredentials] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
   const passwordRef = useRef(null);
 
   const { isLoading, data, error } = useQuery({
@@ -75,7 +77,7 @@ function MyAccount() {
     mutationFn: updateCredentials,
     onSuccess: () => {
       console.log("Succes1");
-      toast("credentials🎉");
+      toast("Account credentials have been updated successfully🎉");
     },
     onError: (error) => {
       toast(`Error: ${error.message} Please try again!💥`);
@@ -89,32 +91,26 @@ function MyAccount() {
     //console.log(e.target.closest("div").querySelector("input").id);
     setChangeAdminDetails(true);
   };
+  const handleChangeAdminCredentials = (e) => {
+    e.preventDefault();
+    setChangeAdminCredentials(true);
+  };
   const handleUpdateAdminDetails = (data) => {
     mutateAdminDetails(data);
-    mutateCredentials(data);
     setChangeAdminDetails(false);
   };
-  let passwordDots;
+  const handleUpdateAdminCredentials = (data) => {
+    mutateCredentials(data);
+    setChangeAdminCredentials(false);
+  };
   const handleShowPassword = (e) => {
     e.preventDefault();
-    console.log(passwordRef.current.innerText);
-    if (!changeAdminDetails) {
-      console.log(Array.from(passwordRef.current.innerText));
-      // passwordRef.current.innerText = <GoDotFill />;
-      setHidePassword(true);
-      passwordDots = Array.from(passwordRef.current.innerText);
-      //  passwordDots = Array.from(passwordRef.current.innerText).map(() => {
-      //    return <GoDotFill />;
-      //  });
-    }
-    /* if (passwordRef.current)
-      if (passwordRef.current.type === "password") {
-        passwordRef.current.type = "text";
-      } else {
-        passwordRef.current.type = "password";
-      }*/
+    setHidePassword(false);
   };
-  if (passwordDots) console.log(passwordDots);
+  const handleHidePassword = (e) => {
+    e.preventDefault();
+    setHidePassword(true);
+  };
   return (
     <MainDiv>
       <SectionDiv>
@@ -186,48 +182,7 @@ function MyAccount() {
                     ></input>
                   )}
                 </InputDiv>
-                <InputDiv>
-                  <label htmlFor="email">
-                    <Heading as="h4">Email address:</Heading>
-                  </label>
 
-                  <span>{admin.email}</span>
-                </InputDiv>
-                <InputDiv>
-                  <label htmlFor="password">
-                    <Heading as="h4">Password:</Heading>
-                  </label>
-                  {!changeAdminDetails ? (
-                    <span ref={passwordRef}>
-                      {hidePassword && passwordDots
-                        ? passwordDots.forEach(() => {
-                            return (
-                              <ul>
-                                <li>
-                                  <GoDotFill />
-                                </li>
-                              </ul>
-                            );
-                          })
-                        : admin.password}
-                    </span>
-                  ) : (
-                    <input
-                      type="password"
-                      ref={passwordRef}
-                      id="password"
-                      autoComplete="current-password"
-                      name="password"
-                      defaultValue={admin.password}
-                      minLength="8"
-                      {...register("password")}
-                    ></input>
-                  )}
-
-                  <Button type="transparent" onClick={handleShowPassword}>
-                    <FaRegEye size={17} />
-                  </Button>
-                </InputDiv>
                 {!changeAdminDetails ? (
                   <Button
                     selfalign="start"
@@ -243,6 +198,84 @@ function MyAccount() {
             );
           })}
         </RowDiv>
+      </SectionDiv>
+      <SectionDiv>
+        {data.map((admin) => {
+          return (
+            <DetailsForm
+              onSubmit={handleSubmit(handleUpdateAdminCredentials)}
+              key={admin.id}
+            >
+              <InputDiv>
+                <label htmlFor="email">
+                  <Heading as="h4">Email address:</Heading>
+                </label>
+
+                <span>{admin.email}</span>
+              </InputDiv>
+              <InputDiv>
+                <label htmlFor="password">
+                  <Heading as="h4">Password:</Heading>
+                </label>
+                {!changeAdminCredentials ? (
+                  hidePassword ? (
+                    <span>
+                      {Array.from(admin.password).map((dot) => {
+                        return (
+                          <span key={`${Math.random()}-${dot}`}>
+                            <GoDotFill size={9} />
+                          </span>
+                        );
+                      })}
+                    </span>
+                  ) : (
+                    <span>{admin.password}</span>
+                  )
+                ) : (
+                  <input
+                    type={hidePassword ? "password" : "text"}
+                    ref={passwordRef}
+                    id="password"
+                    autoComplete="current-password"
+                    name="password"
+                    defaultValue={admin.password}
+                    minLength="8"
+                    {...register("password")}
+                  ></input>
+                )}
+
+                {hidePassword && (
+                  <Button type="transparent" onClick={handleShowPassword}>
+                    <FaRegEye size={17} />
+                  </Button>
+                )}
+                {!hidePassword && (
+                  <Button type="transparent" onClick={handleHidePassword}>
+                    <PiEyeClosedBold size={17} />
+                  </Button>
+                )}
+              </InputDiv>
+              <HiddenInput
+                type="text"
+                id="adminID"
+                name="adminID"
+                defaultValue={admin.id}
+                {...register("adminID")}
+              ></HiddenInput>
+              {!changeAdminCredentials ? (
+                <Button
+                  selfalign="start"
+                  type="transparent"
+                  onClick={handleChangeAdminCredentials}
+                >
+                  <FaRegEdit size={25} />
+                </Button>
+              ) : (
+                <Button selfalign="start">Change details</Button>
+              )}
+            </DetailsForm>
+          );
+        })}
       </SectionDiv>
     </MainDiv>
   );

@@ -27,10 +27,22 @@ export async function logOut() {
 }
 
 export async function updateCredentials(formData) {
-  const { data, error } = await supabase.auth.updateUser({
+  const { error: updateCredentialsError } = await supabase.auth.updateUser({
     password: formData.password,
   });
-  if (error) throw new Error("Could not update user credentials!");
+  if (updateCredentialsError)
+    throw new Error("Could not update user credentials!");
 
+  const { data, error: updateAdminDetailsError } = await supabase
+    .from("admin")
+    .update({
+      email: formData.email,
+      password: formData.password,
+    })
+    .eq("id", formData.adminID)
+    .select();
+
+  if (updateAdminDetailsError)
+    throw new Error("Could not update admin`s details!");
   return data;
 }

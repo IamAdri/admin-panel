@@ -18,7 +18,7 @@ const MainDiv = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const LoginSection = styled.div`
+const LoginSection = styled.form`
   display: flex;
   flex-direction: column;
   background-color: var(--color-grey-50);
@@ -34,6 +34,12 @@ const DetailsDiv = styled.div`
 const InputDiv = styled.div`
   display: flex;
   gap: 15px;
+`;
+const Submit = styled.input`
+  background: none;
+  color: inherit;
+  border: none;
+  cursor: pointer;
 `;
 
 function Login() {
@@ -65,7 +71,7 @@ function Login() {
   return (
     <MainDiv>
       <Heading as="h2">Log in to your account</Heading>
-      <LoginSection>
+      <LoginSection onSubmit={handleLogin}>
         <DetailsDiv>
           <InputDiv>
             <label htmlFor="email">
@@ -99,12 +105,12 @@ function Login() {
             ></input>
           </InputDiv>
         </DetailsDiv>
-        <Button
-          selfalign="start"
-          onClick={handleLogin}
-          disabled={email === "" || password === ""}
-        >
-          {!isLoading ? "Log in" : <SpinnerSmall />}
+        <Button selfalign="start" disabled={email === "" || password === ""}>
+          {!isLoading ? (
+            <Submit type="submit" defaultValue="Log in" />
+          ) : (
+            <SpinnerSmall />
+          )}
         </Button>
       </LoginSection>
     </MainDiv>

@@ -14,8 +14,6 @@ export async function updateAdminDetails(formData) {
       firstName: formData.firstName,
       lastName: formData.lastName,
       phone: formData.phone,
-      email: formData.email,
-      password: formData.password,
     })
     .eq("id", formData.adminID)
     .select();

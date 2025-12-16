@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useLoadAllProducts } from "../features/products/useLoadAllProducts";
 import { useState } from "react";
 import SelectInput from "./SelectInput";
 import Button from "./Button";
+import toast from "react-hot-toast";
+import ImagesForColorsOfProduct from "../features/products/ImagesForColorsOfProduct";
 
 const MainDiv = styled.form`
   display: flex;
@@ -13,7 +15,7 @@ const MainDiv = styled.form`
 const InputDiv = styled.div`
   display: flex;
   gap: 5px;
-  align-items: start;
+  align-items: center;
 `;
 const Submit = styled.input`
   background: none;
@@ -29,6 +31,18 @@ const ColumnDiv = styled.div`
 const InvisibleField = styled.div`
   display: none;
 `;
+const ChangeImagesDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  ${({ $active }) =>
+    $active
+      ? css`
+          border: 2px solid var(--color-blue-700);
+          padding: 3px;
+        `
+      : ""}
+`;
 
 function Form({ product = null, onSubmit = null }) {
   const { register, handleSubmit } = useForm();
@@ -41,6 +55,9 @@ function Form({ product = null, onSubmit = null }) {
   );
   const [firstColor, setFirstColor] = useState(colors ? colors[0] : "beige");
   const [secondColor, setSecondColor] = useState(colors ? colors[1] : "beige");
+  const [isProductForImg, setIsProductForImg] = useState(
+    product ? true : false
+  );
   if (isLoading) return;
 
   const categoryOptionsArray = [];
@@ -64,9 +81,18 @@ function Form({ product = null, onSubmit = null }) {
         })
       : "";
 
-  // console.log(products);
   const colorsList = [...new Set(colorsAvailable)];
-  //const onSubmit = () => {};
+
+  const handleChangeImages = (e) => {
+    e.preventDefault();
+    if (e.target.textContent === "Change images") {
+      setIsProductForImg(false);
+      e.target.textContent = "Cancel";
+    } else {
+      setIsProductForImg(true);
+      e.target.textContent = "Change images";
+    }
+  };
   return (
     <MainDiv onSubmit={handleSubmit(onSubmit)}>
       <ColumnDiv>
@@ -132,16 +158,60 @@ function Form({ product = null, onSubmit = null }) {
           labelTitle="Second color"
           register={{ ...register("color2") }}
         />
-        <InputDiv>
-          <label htmlFor="images">Images</label>
-          <input
-            type="file"
-            id="images"
-            name="images"
-            multiple
-            {...register("images")}
-          ></input>
-        </InputDiv>
+        {product && (
+          <InputDiv>
+            <span>Images:</span>
+            <ImagesForColorsOfProduct product={product} />
+          </InputDiv>
+        )}
+        <ChangeImagesDiv $active={product && !isProductForImg}>
+          {product && (
+            <InputDiv>
+              <Button type="tertiary" onClick={handleChangeImages}>
+                Change images
+              </Button>
+            </InputDiv>
+          )}
+          {!isProductForImg && (
+            <>
+              <InputDiv>
+                <label htmlFor="imagesFirstColor">
+                  Images for first color (2-4 images)
+                </label>
+                <input
+                  type="file"
+                  id="imagesFirstColor"
+                  name="imagesFirstColor"
+                  required
+                  multiple
+                  {...register("imagesFirstColor", {
+                    validate: (value) =>
+                      (value.length >= 2 && value.length <= 4) ||
+                      toast("Please upload from 2 to 4 images for each color!"),
+                  })}
+                ></input>
+              </InputDiv>
+              <InputDiv>
+                <label htmlFor="imagesSecondColor">
+                  Images for second color (2-4 images)
+                </label>
+                <input
+                  type="file"
+                  id="imagesSecondColor"
+                  name="imagesSecondColor"
+                  required
+                  multiple
+                  {...register("imagesSecondColor", {
+                    validate: (value) =>
+                      (value.length >= 2 && value.length <= 4) ||
+                      toast("Please upload from 2 to 4 images for each color!"),
+                  })}
+                ></input>
+              </InputDiv>
+            </>
+          )}
+        </ChangeImagesDiv>
+
         <InputDiv>
           <label htmlFor="price">Price</label>
           <input
