@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import OrdersBar from "../features/dashboard/OrdersBar";
 import RatingsPie from "../features/dashboard/RatingsPie";
-import { ResponsiveContainer } from "recharts";
 
 const MainDiv = styled.div`
   display: flex;

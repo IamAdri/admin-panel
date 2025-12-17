@@ -22,8 +22,8 @@ const DescriptionTextModal = styled.p`
 `;
 
 function DescriptionSectionForProduct({ product }) {
+  //Opne/close description modal
   const handleOpenDescription = (e) => {
-    console.log(e.target.nextSibling);
     const description = e.target.nextSibling;
     description.style.display = "flex";
   };

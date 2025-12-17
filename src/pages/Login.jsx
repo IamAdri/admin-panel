@@ -57,7 +57,7 @@ function Login() {
     },
     onError: () => {
       toast.error(
-        "Provided email or password are incorrect. Please try again!"
+        "Provided email or password are incorrect. Please try again!💥"
       );
     },
   });

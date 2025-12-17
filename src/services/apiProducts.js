@@ -137,7 +137,12 @@ export async function addNewProduct(formData) {
 
   //Create object for variants column
   const variants = await uploadImages(formData);
-
+  console.log(formData);
+  //Set to null discount if it is "" or 0
+  const discount =
+    formData.discount === "" || formData.discount === "0"
+      ? null
+      : Number(formData.discount);
   const { data, error } = await supabase
     .from("items")
     .insert([
@@ -147,7 +152,7 @@ export async function addNewProduct(formData) {
         description: formData.description,
         variants: variants,
         price: Number(formData.price),
-        discount: Number(formData.discount),
+        discount: discount,
         itemType: formData.itemType,
       },
     ])

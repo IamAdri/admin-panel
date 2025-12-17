@@ -24,18 +24,17 @@ const ImageElement = styled.li`
 `;
 
 function ImagesForColorsOfProduct({ product }) {
+  //Select colors of product
   const colors = Object.keys(product.variants);
-
+  //Open/close images modal
   const handleOpenImages = (e) => {
     e.preventDefault();
     const images = e.target.closest("li").lastChild;
     images.style.display = "flex";
   };
-
   const handleCloseImages = (e) => {
     e.preventDefault();
     const images = e.target.closest("div");
-    console.log(images);
     images.style.display = "none";
   };
 

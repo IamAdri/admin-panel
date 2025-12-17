@@ -37,6 +37,7 @@ function ProductRowActions({ product }) {
       toast(`Error: ${error.message} Please try again!💥`);
     },
   });
+  //Open/close edit form
   const handleOpenEditForm = () => {
     const editForm = modalRef.current.firstChild;
     editForm.style.display = "flex";
@@ -54,6 +55,9 @@ function ProductRowActions({ product }) {
         queryKey: ["productsForTable"],
       });
       toast("Product has been deleted successfully🎉");
+    },
+    onError: (error) => {
+      toast(`Error: ${error.message} Please try again!💥`);
     },
   });
   const handleDeleteProduct = (e) => {
@@ -73,7 +77,7 @@ function ProductRowActions({ product }) {
           <span>Edit</span> <FaRegEdit />
         </Button>
         <div ref={modalRef}>
-          <ModalLayout position="secondary" backgroundcolor="grey">
+          <ModalLayout $position="secondary" $backgroundcolor="grey">
             <CloseButton handleCloseModal={handleCloseEditForm} />
             <Form product={product} onSubmit={onSubmit} />
           </ModalLayout>
@@ -88,7 +92,3 @@ function ProductRowActions({ product }) {
 }
 
 export default ProductRowActions;
-/* 
-<Modal handleCloseModal={handleCloseEditForm}>
-            <Form product={product} onSubmit={onSubmit} />
-          </Modal>*/

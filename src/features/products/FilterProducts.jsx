@@ -5,8 +5,10 @@ import Heading from "../../ui/Heading";
 import Range from "../../ui/Range";
 import { IoMdClose } from "react-icons/io";
 import { useForm } from "react-hook-form";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useLoadAllProducts } from "./useLoadAllProducts";
+import toast from "react-hot-toast";
+import SpinnerSmall from "../../ui/SpinnerSmall";
 
 const Modal = styled.div`
   border: 1px solid;
@@ -19,37 +21,35 @@ const Modal = styled.div`
   align-items: end;
   padding: 10px 20px;
 `;
-
 const Form = styled.form`
   display: flex;
   flex-direction: column;
 `;
-
 const FormDiv = styled.div`
   display: flex;
   gap: 55px;
 `;
-
 const FilterCategory = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
 const FilterOptionsDiv = styled.div`
   margin-left: 75px;
   margin-bottom: 15px;
 `;
-
 const FilterOption = styled.div`
   display: flex;
   gap: 5px;
   margin-bottom: 10px;
 `;
-
 const ViewMoreButton = styled.div`
   cursor: pointer;
 `;
-
+const ButtonsDiv = styled.div`
+  display: flex;
+  gap: 15px;
+  justify-content: end;
+`;
 const Submit = styled.input`
   background: none;
   color: inherit;
@@ -59,6 +59,7 @@ const Submit = styled.input`
 
 function FilterProducts({ setSelectedSortOption }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [openedModal, setOpenedModal] = useState(false);
   const [colorsShown, setColorsShown] = useState(false);
   const [maxPrice, setMaxPrice] = useState(0);
@@ -80,14 +81,6 @@ function FilterProducts({ setSelectedSortOption }) {
 
   //Get products from supabase with react query
   const { products, isLoading, error } = useLoadAllProducts();
-  /* const {
-    isLoading,
-    data: products,
-    error,
-  } = useQuery({
-    queryKey: ["productsForFilterAndForm"],
-    queryFn: getProductsForFilterAndForm,
-  });*/
 
   //Update default value of maxPrice
   useEffect(() => {
@@ -99,7 +92,16 @@ function FilterProducts({ setSelectedSortOption }) {
     }
   }, [maxPrice, reset]);
 
-  if (isLoading) return;
+  //Reset table to show products with no filters on reloading page
+  useEffect(() => {
+    navigate("/products");
+  }, []);
+
+  //Actions in case of error/loading state for getting products
+  if (error) {
+    return toast(`Error: ${error.message} Please try again!💥`);
+  }
+  if (isLoading) return <SpinnerSmall />;
 
   //Get types and categories for filter
   const categoryOptionsArray = ["new collection"];
@@ -145,7 +147,14 @@ function FilterProducts({ setSelectedSortOption }) {
     setSelectedSortOption("default");
     setOpenedModal(false);
   };
-
+  const handleResetOptions = (e) => {
+    e.preventDefault();
+    searchParams.set("filter", "");
+    searchParams.set("page", 1);
+    setSearchParams(searchParams);
+    setOpenedModal(false);
+    reset();
+  };
   return (
     <>
       <Button type="tertiary" size="medium" onClick={handleOpenFilterModal}>
@@ -219,7 +228,6 @@ function FilterProducts({ setSelectedSortOption }) {
                   </FilterOptionsDiv>
                 </FilterCategory>
               </div>
-
               <div>
                 <FilterCategory>
                   <Heading as="h4">Colors</Heading>
@@ -245,9 +253,12 @@ function FilterProducts({ setSelectedSortOption }) {
                 </FilterCategory>
               </div>
             </FormDiv>
-            <Button selfalign="end">
-              <Submit type="submit" />
-            </Button>
+            <ButtonsDiv>
+              <Button onClick={handleResetOptions}>Reset</Button>
+              <Button selfalign="end">
+                <Submit type="submit" />
+              </Button>
+            </ButtonsDiv>
           </Form>
         </Modal>
       )}

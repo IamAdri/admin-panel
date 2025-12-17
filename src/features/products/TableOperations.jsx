@@ -1,5 +1,4 @@
 import styled from "styled-components";
-
 import Sorting from "../../ui/Sorting";
 import { useState } from "react";
 import FilterProducts from "./FilterProducts";

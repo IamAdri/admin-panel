@@ -30,6 +30,7 @@ const MainDiv = styled.div`
 `;
 
 function OrdersBar() {
+  //Load orders prices from orders table
   const {
     isLoading,
     data: ordersData,
@@ -38,14 +39,18 @@ function OrdersBar() {
     queryKey: ["ordersRevenue"],
     queryFn: getOrders,
   });
-  if (error) toast(error);
+  if (error) {
+    return toast(`Error: ${error.message} Please try again!💥`);
+  }
   if (isLoading) return <Spinner />;
-  console.log(ordersData);
+
+  //Get the last 6 months
   const last6Months = eachMonthOfInterval({
     start: subMonths(new Date(), 6),
     end: subMonths(new Date(), 1),
   }).map((month) => format(month, "MMMM"));
 
+  //Group orders by month
   const groupedOrdersByMonth = JSON.parse(
     JSON.stringify(
       Object.groupBy(ordersData, ({ deliveryDate }) => {
@@ -54,10 +59,10 @@ function OrdersBar() {
       })
     )
   );
-  console.log(groupedOrdersByMonth);
 
-  const revenuePerMonth = Object.entries(groupedOrdersByMonth).map(
-    ([month, orders]) => {
+  //Calculate revenue for each each month from last 6 past months and return an array with month and revenue
+  const revenuePerMonth = Object.entries(groupedOrdersByMonth)
+    .map(([month, orders]) => {
       if (last6Months.includes(month)) {
         const revenuePerMonth = orders.reduce(
           (acc, order) => acc + order.totalPrice,
@@ -65,13 +70,14 @@ function OrdersBar() {
         );
         return { name: month, revenue: revenuePerMonth };
       }
-    }
-  );
-  console.log(revenuePerMonth);
+    })
+    .filter((revenue) => {
+      return revenue !== undefined;
+    });
+
   return (
     <MainDiv>
-      <Heading as="h2">Revenu per month in the last 6 months</Heading>
-
+      <Heading as="h2">Revenue per month in the last 6 months</Heading>
       <BarChart
         style={{
           maxHeight: "350px",
@@ -104,6 +110,3 @@ function OrdersBar() {
 }
 
 export default OrdersBar;
-/*minWidth: "500px",
-          maxWidth: "900px",
-          maxHeight: "70vh",*/

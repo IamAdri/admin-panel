@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { Cell, Legend, Pie, PieChart } from "recharts";
-
 import Spinner from "../../ui/Spinner";
 import Heading from "../../ui/Heading";
 import { getRatings } from "../../services/apiDashboard";
 import styled from "styled-components";
+import toast from "react-hot-toast";
 
 const colors = ["#8884d8", "#83a6ed", "#8dd1e1", "#82ca9d", "#a4de6c"];
 
@@ -56,12 +56,17 @@ const MainDiv = styled.div`
 `;
 
 function RatingsPie({ isAnimationActive = true }) {
+  //Load ratings from reviews table
   const { isLoading, data, error } = useQuery({
     queryKey: ["ratings"],
     queryFn: getRatings,
   });
+  if (error) {
+    return toast(`Error: ${error.message} Please try again!💥`);
+  }
   if (isLoading) return <Spinner />;
 
+  //Calculate stars for each rating from all users and create object
   let counter = {
     "1_star": 0,
     "2_stars": 0,
@@ -116,7 +121,6 @@ function RatingsPie({ isAnimationActive = true }) {
           wrapperStyle={{
             top: "50%",
             right: -10,
-
             transform: "translate(0, -50%)",
             lineHeight: "25px",
           }}
@@ -127,6 +131,3 @@ function RatingsPie({ isAnimationActive = true }) {
 }
 
 export default RatingsPie;
-/* minWidth: "250px",
-          maxWidth: "550px",
-          maxHeight: "100vh",*/

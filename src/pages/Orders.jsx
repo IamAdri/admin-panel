@@ -8,9 +8,10 @@ import Spinner from "../ui/Spinner";
 import List from "../ui/List";
 import styled from "styled-components";
 import Button from "../ui/Button";
-import CustomerDetails from "../features/products/CustomerDetails";
+import CustomerDetails from "../features/orders/CustomerDetails";
 import ModalLayout from "../ui/ModalLayout";
 import CloseButton from "../ui/CloseButton";
+import toast from "react-hot-toast";
 
 const MainDiv = styled.div`
   max-width: 100vw;
@@ -21,7 +22,6 @@ const MainDiv = styled.div`
 const OrderDiv = styled.div`
   display: flex;
 `;
-
 const NameSpan = styled.span`
   font-weight: 500;
 `;
@@ -39,16 +39,16 @@ function Orders() {
     queryKey: ["orders"],
     queryFn: getOrders,
   });
-
+  if (errorOrders) {
+    return toast(`Error: ${errorOrders.message} Please try again!💥`);
+  }
   if (isLoadingOrders) return <Spinner />;
 
   //Open/close modal for products ordered
   const handleOpenProducts = (e) => {
-    console.log(e.target.parentNode);
     e.target.parentNode.lastChild.style.display = "flex";
   };
   const handleCloseProducts = (e) => {
-    console.log(e.target.closest("div"));
     e.target.closest("div").style.display = "none";
   };
 

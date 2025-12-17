@@ -46,7 +46,9 @@ const ChangeImagesDiv = styled.div`
 
 function Form({ product = null, onSubmit = null }) {
   const { register, handleSubmit } = useForm();
+  //Load all products from supabase table with react query
   const { products, isLoading, error } = useLoadAllProducts();
+  //Set default values to product details in case the form is used for editing an existing product or set to default if it is a new product
   const colors = product ? Object.keys(product.variants) : null;
   const [type, setType] = useState(product?.itemType || "shoes");
   const [category, setCategory] = useState(product?.category[0] || "heels");
@@ -58,8 +60,12 @@ function Form({ product = null, onSubmit = null }) {
   const [isProductForImg, setIsProductForImg] = useState(
     product ? true : false
   );
+  //Actions in case of loading/error state of loading products
   if (isLoading) return;
-
+  if (error) {
+    return toast(`Error: ${error.message} Please try again!💥`);
+  }
+  //Set array for types and categories based on existing ones without duplicating.
   const categoryOptionsArray = [];
   const newCollectionOptions = ["no", "yes"];
   const typeOptionsArray = [];

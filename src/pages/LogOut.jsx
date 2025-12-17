@@ -10,10 +10,11 @@ import toast from "react-hot-toast";
 const MainDiv = styled.div`
   display: flex;
   flex-direction: column;
-
   gap: 15px;
 `;
+
 function SignOut() {
+  //Mutation function to log out admin and navigate to login page
   const navigate = useNavigate();
   const { mutate, isLoading } = useMutation({
     mutationFn: logOut,
@@ -21,16 +22,16 @@ function SignOut() {
       sessionStorage.removeItem("user");
       navigate("/login");
       window.location.reload(false);
-
-      //console.log(user);
     },
     onError: () => {
-      toast.error("Could not log out. Please try again!");
+      toast.error("Could not log out. Please try again!💥");
     },
   });
+  if (isLoading) return <Spinner />;
   const handleLogOut = () => {
     mutate();
   };
+
   return (
     <MainDiv>
       <Heading as="h2">Please log out here!</Heading>

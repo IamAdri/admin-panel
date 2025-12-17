@@ -3,6 +3,7 @@ import styled from "styled-components";
 const Spinner = styled.div`
   margin: 3.2rem auto 1.6rem;
   width: 60px;
+  height: 60px;
   aspect-ratio: 1;
   border-radius: 50%;
   border: 8px solid var(--color-grey-800);

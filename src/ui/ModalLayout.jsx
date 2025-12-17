@@ -22,8 +22,8 @@ const positions = {
 };
 
 const ModalLayout = styled.div.attrs((props) => ({
-  backgroundcolor: props.backgroundcolor || "blue",
-  position: props.position || "primary",
+  $backgroundcolor: props.$backgroundcolor || "blue",
+  $position: props.$position || "primary",
 }))`
   display: none;
   position: absolute;
@@ -33,8 +33,8 @@ const ModalLayout = styled.div.attrs((props) => ({
 
   flex-direction: column;
 
-  ${(props) => backgroundcolors[props.backgroundcolor]}
-  ${(props) => positions[props.position]}
+  ${(props) => backgroundcolors[props.$backgroundcolor]}
+  ${(props) => positions[props.$position]}
 `;
 
 export default ModalLayout;
