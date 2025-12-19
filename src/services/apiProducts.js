@@ -163,6 +163,7 @@ export async function addNewProduct(formData) {
 }
 
 export async function editProduct(formData) {
+  console.log(formData);
   //Check if updated product is new collection or not
   let category = [];
   formData.newCollection === "yes"
@@ -170,8 +171,9 @@ export async function editProduct(formData) {
     : category.push(formData.category);
 
   //Create object for variants column
-  const variants = await uploadImages(formData);
+  const variants = formData?.imagesFirstColor && (await uploadImages(formData));
   console.log(formData);
+  console.log(variants);
   //Update edited product in table
   const { error } = await supabase
     .from("items")
