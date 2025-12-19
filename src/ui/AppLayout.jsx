@@ -14,8 +14,6 @@ const Main = styled.main`
 `;
 
 function AppLayout() {
-  const isLoginPage = location.pathname === "/login";
-  console.log(isLoginPage);
   return (
     <StyledAppLayout>
       <Header />

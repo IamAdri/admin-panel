@@ -101,12 +101,12 @@ function AdminCredentials({ admin }) {
           ></input>
         )}
         {hidePassword && (
-          <Button type="transparent" onClick={handleShowPassword}>
+          <Button $type="transparent" onClick={handleShowPassword}>
             <FaRegEye size={17} />
           </Button>
         )}
         {!hidePassword && (
-          <Button type="transparent" onClick={handleHidePassword}>
+          <Button $type="transparent" onClick={handleHidePassword}>
             <PiEyeClosedBold size={17} />
           </Button>
         )}
@@ -120,14 +120,14 @@ function AdminCredentials({ admin }) {
       ></HiddenInput>
       {!changeAdminCredentials ? (
         <Button
-          selfalign="start"
-          type="transparent"
+          $selfalign="start"
+          $type="transparent"
           onClick={handleChangeAdminCredentials}
         >
           <FaRegEdit size={25} />
         </Button>
       ) : (
-        <Button selfalign="start">Change details</Button>
+        <Button $selfalign="start">Change details</Button>
       )}
     </DetailsForm>
   );

@@ -6,7 +6,7 @@ import Button from "../../ui/Button";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
-import Form from "../../ui/Form";
+import Form from "./Form";
 
 const ProductFormMain = styled.div`
   width: fit-content;
@@ -64,12 +64,12 @@ function AddProductForm() {
   };
   return (
     <ProductFormMain>
-      <Button size="full" ref={openFormButton} onClick={handleOpenForm}>
+      <Button $size="full" ref={openFormButton} onClick={handleOpenForm}>
         Add new product
       </Button>
       {openForm && (
         <FormMain>
-          <Button type="tertiary" selfalign="end" onClick={handleCloseForm}>
+          <Button $type="tertiary" $selfalign="end" onClick={handleCloseForm}>
             <IoMdClose size="15px" />
           </Button>
           <Form onSubmit={onSubmit} />

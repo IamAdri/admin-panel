@@ -3,7 +3,7 @@ import Button from "./Button";
 
 function CloseButton({ handleCloseModal }) {
   return (
-    <Button type="tertiary" selfalign="end" onClick={handleCloseModal}>
+    <Button $type="tertiary" $selfalign="end" onClick={handleCloseModal}>
       <IoMdClose size="15px" />
     </Button>
   );

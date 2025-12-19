@@ -76,7 +76,7 @@ function Orders() {
                 <CustomerDetails email={order.email} />
                 <TableData>
                   <OrderDiv>
-                    <Button type="tertiary" onClick={handleOpenProducts}>
+                    <Button $type="tertiary" onClick={handleOpenProducts}>
                       Show products
                     </Button>
                     <ModalLayout>

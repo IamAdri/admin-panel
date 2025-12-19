@@ -35,7 +35,7 @@ function SignOut() {
   return (
     <MainDiv>
       <Heading as="h2">Please log out here!</Heading>
-      <Button selfalign="start" onClick={handleLogOut}>
+      <Button $selfalign="start" onClick={handleLogOut}>
         <p>Log out</p>
         <IoLogOutOutline size={20} />
       </Button>

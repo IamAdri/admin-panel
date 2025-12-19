@@ -107,14 +107,14 @@ function AdminDetails({ admin }) {
       </InputDiv>
       {!changeAdminDetails ? (
         <Button
-          selfalign="start"
-          type="transparent"
+          $selfalign="start"
+          $type="transparent"
           onClick={handleChangeAdminDetails}
         >
           <FaRegEdit size={25} />
         </Button>
       ) : (
-        <Button selfalign="start">Change details</Button>
+        <Button $selfalign="start">Change details</Button>
       )}
     </DetailsForm>
   );

@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteProduct, editProduct } from "../../services/apiProducts";
 import toast from "react-hot-toast";
 import { useRef } from "react";
-import Form from "../../ui/Form";
+import Form from "./Form";
 import ModalLayout from "../../ui/ModalLayout";
 import CloseButton from "../../ui/CloseButton";
 
@@ -73,7 +73,7 @@ function ProductRowActions({ product }) {
   return (
     <TdForEditAnDelete>
       <DivForButtons>
-        <Button size="medium" onClick={handleOpenEditForm}>
+        <Button $size="medium" onClick={handleOpenEditForm}>
           <span>Edit</span> <FaRegEdit />
         </Button>
         <div ref={modalRef}>
@@ -82,7 +82,7 @@ function ProductRowActions({ product }) {
             <Form product={product} onSubmit={onSubmit} />
           </ModalLayout>
         </div>
-        <Button type="secondary" size="medium" onClick={handleDeleteProduct}>
+        <Button $type="secondary" $size="medium" onClick={handleDeleteProduct}>
           <span>Delete</span>
           <RiDeleteBin6Line />
         </Button>

@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import styled, { css } from "styled-components";
-import { useLoadAllProducts } from "../features/products/useLoadAllProducts";
+import { useLoadAllProducts } from "./useLoadAllProducts";
 import { useState } from "react";
-import SelectInput from "./SelectInput";
-import Button from "./Button";
+import SelectInput from "../../ui/SelectInput";
+import Button from "../../ui/Button";
 import toast from "react-hot-toast";
-import ImagesForColorsOfProduct from "../features/products/ImagesForColorsOfProduct";
+import ImagesForColorsOfProduct from "./ImagesForColorsOfProduct";
 
 const MainDiv = styled.form`
   display: flex;
@@ -43,6 +43,10 @@ const ChangeImagesDiv = styled.div`
         `
       : ""}
 `;
+const ColorsInput = styled(SelectInput)`
+  overflow: auto;
+  color: black;
+`;
 
 function Form({ product = null, onSubmit = null }) {
   const { register, handleSubmit } = useForm();
@@ -65,30 +69,27 @@ function Form({ product = null, onSubmit = null }) {
   if (error) {
     return toast(`Error: ${error.message} Please try again!💥`);
   }
-  //Set array for types and categories based on existing ones without duplicating.
-  const categoryOptionsArray = [];
+  //Set array for types, colors and categories based on existing ones without duplicating
   const newCollectionOptions = ["no", "yes"];
-  const typeOptionsArray = [];
-  if (products.length > 0)
-    products.map((product) => {
-      const categories = product.category.join();
-      const category = categories.includes(",")
-        ? categories.split(",").slice(0, -1).join()
-        : categories;
-      if (!categoryOptionsArray.includes(category))
-        categoryOptionsArray.push(category);
-      if (!typeOptionsArray.includes(product.itemType))
-        typeOptionsArray.push(product.itemType);
-    });
   const colorsAvailable =
     products.length > 0
       ? products.flatMap((product) => {
-          if (product?.variants) return Object.keys(product.variants).sort();
+          if (product?.variants) return Object.keys(product.variants);
         })
       : "";
+  const colorsList = [...new Set(colorsAvailable)].sort();
+  const categories = products.flatMap((product) => {
+    if (product?.category) return Object.values(product.category);
+  });
+  const categoriesList = [
+    ...new Set(categories.filter((category) => category !== "newCollection")),
+  ].sort();
+  const types = products.map((product) => {
+    if (product?.itemType) return product.itemType;
+  });
+  const typesList = [...new Set(types)].sort();
 
-  const colorsList = [...new Set(colorsAvailable)];
-
+  //Option to choose to change images if form is used for editting an existing product
   const handleChangeImages = (e) => {
     e.preventDefault();
     if (e.target.textContent === "Change images") {
@@ -105,14 +106,14 @@ function Form({ product = null, onSubmit = null }) {
         <SelectInput
           optionValue={type}
           setOptionValue={setType}
-          optionArray={typeOptionsArray}
+          optionArray={typesList}
           labelTitle="Type"
           register={{ ...register("itemType") }}
         />
         <SelectInput
           optionValue={category}
           setOptionValue={setCategory}
-          optionArray={categoryOptionsArray}
+          optionArray={categoriesList}
           labelTitle="Category"
           register={{ ...register("category") }}
         />
@@ -173,7 +174,7 @@ function Form({ product = null, onSubmit = null }) {
         <ChangeImagesDiv $active={product && !isProductForImg}>
           {product && (
             <InputDiv>
-              <Button type="tertiary" onClick={handleChangeImages}>
+              <Button $type="tertiary" onClick={handleChangeImages}>
                 Change images
               </Button>
             </InputDiv>
@@ -256,7 +257,7 @@ function Form({ product = null, onSubmit = null }) {
         )}
       </ColumnDiv>
 
-      <Button selfalign="end">
+      <Button $selfalign="end">
         <Submit type="submit" />
       </Button>
     </MainDiv>

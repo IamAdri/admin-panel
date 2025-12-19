@@ -57,9 +57,9 @@ const selfaligns = {
   `,
 };
 const Button = styled.button.attrs((props) => ({
-  type: props.type || "primary",
-  size: props.size || "fitContent",
-  selfalign: props.selfalign || "center",
+  $type: props.$type || "primary",
+  $size: props.$size || "fitContent",
+  $selfalign: props.$selfalign || "center",
 }))`
   border-radius: 7%;
   justify-content: center;
@@ -73,9 +73,9 @@ const Button = styled.button.attrs((props) => ({
     border: 1px solid var(--color-grey-400);
     cursor: not-allowed;
   }
-  ${(props) => types[props.type]}
-  ${(props) => sizes[props.size]}
-  ${(props) => selfaligns[props.selfalign]}
+  ${(props) => types[props.$type]}
+  ${(props) => sizes[props.$size]}
+  ${(props) => selfaligns[props.$selfalign]}
 `;
 
 export default Button;

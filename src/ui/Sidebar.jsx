@@ -6,7 +6,6 @@ const StyledSidebar = styled.aside`
   min-height: 100vh;
   padding: 2rem;
 `;
-
 const NavList = styled.ul`
   display: flex;
   flex-direction: column;

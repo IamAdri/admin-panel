@@ -44,7 +44,7 @@ function ImagesForColorsOfProduct({ product }) {
         return (
           <List key={(product.id, color)}>
             {color}:
-            <Button type="tertiary" onClick={handleOpenImages}>
+            <Button $type="tertiary" onClick={handleOpenImages}>
               <FaImages size={17} />
             </Button>
             <ModalLayout>

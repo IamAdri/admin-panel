@@ -104,18 +104,20 @@ function FilterProducts({ setSelectedSortOption }) {
   if (isLoading) return <SpinnerSmall />;
 
   //Get types and categories for filter
-  const categoryOptionsArray = ["new collection"];
-  const typeOptionsArray = [];
-  products.map((product) => {
-    const categories = product.category.join();
-    const category = categories.includes(",")
-      ? categories.split(",").slice(0, -1).join()
-      : categories;
-    if (!categoryOptionsArray.includes(category))
-      categoryOptionsArray.push(category);
-    if (!typeOptionsArray.includes(product.itemType))
-      typeOptionsArray.push(product.itemType);
+  const categories = products.flatMap((product) => {
+    if (product?.category) return Object.values(product.category);
   });
+  const categoriesList = [
+    ...new Set(
+      categories.map((category) =>
+        category === "newCollection" ? "new collection" : category
+      )
+    ),
+  ].sort();
+  const types = products.map((product) => {
+    if (product?.itemType) return product.itemType;
+  });
+  const typesList = [...new Set(types)].sort();
   //Get biggest price from products
   products?.length > 0 &&
     products.forEach((product) => {
@@ -157,14 +159,14 @@ function FilterProducts({ setSelectedSortOption }) {
   };
   return (
     <>
-      <Button type="tertiary" size="medium" onClick={handleOpenFilterModal}>
+      <Button $type="tertiary" $size="medium" onClick={handleOpenFilterModal}>
         Filter
       </Button>
       {openedModal && (
         <Modal>
           <Button
-            type="tertiary"
-            selfalign="end"
+            $type="tertiary"
+            $selfalign="end"
             onClick={() => setOpenedModal(false)}
           >
             <IoMdClose size="15px" />
@@ -175,7 +177,7 @@ function FilterProducts({ setSelectedSortOption }) {
                 <FilterCategory>
                   <Heading as="h4">Type</Heading>
                   <FilterOptionsDiv>
-                    {typeOptionsArray.map((type) => {
+                    {typesList.map((type) => {
                       return (
                         <FilterOption key={type}>
                           <input
@@ -194,7 +196,7 @@ function FilterProducts({ setSelectedSortOption }) {
                 <FilterCategory>
                   <Heading as="h4">Category</Heading>
                   <FilterOptionsDiv>
-                    {categoryOptionsArray.map((categoryOption) => {
+                    {categoriesList.map((categoryOption) => {
                       return (
                         <FilterOption key={categoryOption}>
                           <input
@@ -255,7 +257,7 @@ function FilterProducts({ setSelectedSortOption }) {
             </FormDiv>
             <ButtonsDiv>
               <Button onClick={handleResetOptions}>Reset</Button>
-              <Button selfalign="end">
+              <Button $selfalign="end">
                 <Submit type="submit" />
               </Button>
             </ButtonsDiv>

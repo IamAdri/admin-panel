@@ -34,7 +34,7 @@ function DescriptionSectionForProduct({ product }) {
   return (
     <DescriptionDiv>
       <DescriptionText>{product.description}</DescriptionText>
-      <Button type="tertiary" onClick={handleOpenDescription}>
+      <Button $type="tertiary" onClick={handleOpenDescription}>
         Show more
       </Button>
       <ModalLayout>

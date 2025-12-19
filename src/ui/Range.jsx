@@ -4,7 +4,6 @@ const SliderContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
 const SliderTrack = styled.div`
   position: relative;
   height: 7px;
@@ -12,7 +11,6 @@ const SliderTrack = styled.div`
   background: var(--color-grey-200);
   margin: 20px 0px;
 `;
-
 const SliderRange = styled.div.attrs(({ $left, $width }) => ({
   style: {
     left: `${$left}%`,
@@ -24,7 +22,6 @@ const SliderRange = styled.div.attrs(({ $left, $width }) => ({
   border-radius: 3px;
   background: var(--color-blue-600);
 `;
-
 const Thumb = styled.input`
   appearance: none;
   background: transparent;
@@ -41,7 +38,6 @@ const Thumb = styled.input`
     margin-top: -6px;
   }
 `;
-
 const PriceRange = styled.p`
   width: 120px;
   font-size: small;

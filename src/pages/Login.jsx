@@ -105,7 +105,7 @@ function Login() {
             ></input>
           </InputDiv>
         </DetailsDiv>
-        <Button selfalign="start" disabled={email === "" || password === ""}>
+        <Button $selfalign="start" disabled={email === "" || password === ""}>
           {!isLoading ? (
             <Submit type="submit" defaultValue="Log in" />
           ) : (
