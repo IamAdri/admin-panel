@@ -170,7 +170,8 @@ export async function editProduct(formData) {
     : category.push(formData.category);
 
   //Create object for variants column
-  const variants = formData?.variants && (await uploadImages(formData));
+  const variants = await uploadImages(formData);
+  console.log(formData);
   //Update edited product in table
   const { error } = await supabase
     .from("items")
