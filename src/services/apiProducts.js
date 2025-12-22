@@ -207,8 +207,27 @@ export async function editProduct(formData) {
 }
 
 export async function deleteProduct(name) {
-  const { error } = await supabase.from("items").delete().eq("name", name);
-  if (error) throw new Error("Could not delete the product!");
+  const { error: deleteFromFavoritesError } = await supabase
+    .from("favorites")
+    .delete()
+    .eq("name", name);
+
+  const { error: deleteFromCartError } = await supabase
+    .from("cart")
+    .delete()
+    .eq("name", name);
+
+  const { error: deleteFromItemsError } = await supabase
+    .from("items")
+    .delete()
+    .eq("name", name);
+
+  if (deleteFromFavoritesError)
+    throw new Error("Could not delete the product from favorites!");
+  if (deleteFromCartError)
+    throw new Error("Could not delete the product from cart!");
+  if (deleteFromItemsError)
+    throw new Error("Could not delete the product from products table!");
 }
 
 export async function getOrders() {
