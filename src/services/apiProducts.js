@@ -169,9 +169,12 @@ export async function editProduct(formData) {
   formData.newCollection === "yes"
     ? category.push(formData.category, "newCollection")
     : category.push(formData.category);
-
+  console.log(formData?.imagesFirstColor?.length);
   //Create object for variants column
-  const variants = formData?.imagesFirstColor && (await uploadImages(formData));
+  const variants =
+    formData?.imagesFirstColor?.length > 0
+      ? await uploadImages(formData)
+      : "undefined";
   console.log(formData);
   console.log(variants);
   //Update edited product in table
@@ -181,15 +184,26 @@ export async function editProduct(formData) {
       name: formData.name,
       category: category,
       description: formData.description,
-      variants: variants,
       price: Number(formData.price),
       discount: Number(formData.discount),
       itemType: formData.itemType,
     })
     .eq("id", formData.productID)
     .select();
-
+  //Upload new images only if images were changed
+  const { error: updateImagesError } =
+    variants !== "undefined" &&
+    (await supabase
+      .from("items")
+      .update({
+        variants: variants,
+      })
+      .eq("id", formData.productID)
+      .select());
+  //Throw errors for each async operation
   if (error) throw new Error("Could not update new product!");
+  if (updateImagesError)
+    throw new Error("Could not update images for edited product!");
 }
 
 export async function deleteProduct(name) {
