@@ -103,6 +103,7 @@ function OrdersBar() {
           dataKey="revenue"
           fill="#8884d8"
           activeBar={<Rectangle fill="#83a6ed" />}
+          name="revenue (EUR)"
         />
       </BarChart>
     </MainDiv>
