@@ -77,7 +77,7 @@ async function uploadImages(data) {
   let imageNamesSecondColor = [];
   //Upload in storage bucket images for first color and add names with Math.random in array
   for (const image of imagesArrayFirstColor) {
-    const imageName = `${Math.random()}-${image.name}`;
+    const imageName = `/${Math.random()}-${image.name}`;
     imageNamesFirstColor.push(imageName);
     const { error: storageUploadErrorFirstColor } = await supabase.storage
       .from(data.category)
