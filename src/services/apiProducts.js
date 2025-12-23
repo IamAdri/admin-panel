@@ -163,7 +163,6 @@ export async function addNewProduct(formData) {
 }
 
 export async function editProduct(formData) {
-  console.log(formData);
   //Check if updated product is new collection or not
   let category = [];
   formData.newCollection === "yes"
@@ -200,10 +199,26 @@ export async function editProduct(formData) {
       })
       .eq("id", formData.productID)
       .select());
+
+  //Delete old product from cart table for adrielle project
+  const { error: deleteFromCartError } = await supabase
+    .from("cart")
+    .delete()
+    .eq("cart_id", formData.productID);
+
+  //Delete old product from favorite table for adrielle project
+  const { error: deleteFromFavoriteError } = await supabase
+    .from("favorites")
+    .delete()
+    .eq("favorite_id", formData.productID);
   //Throw errors for each async operation
   if (error) throw new Error("Could not update new product!");
   if (updateImagesError)
     throw new Error("Could not update images for edited product!");
+  if (deleteFromCartError)
+    throw new Error("Could not delete product from cart table!");
+  if (deleteFromFavoriteError)
+    throw new Error("Could not update product from favorites table!");
 }
 
 export async function deleteProduct(name) {
