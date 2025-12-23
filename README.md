@@ -15,10 +15,12 @@ This project is an example for my portofolio and it can do the following main ta
 
 ## Getting Started
 In order to explore the website you need to use the following:
- ### credentials:
+
+**credentials:**
 * email (it is fictional) - admin@gmail.com
 * password - AdminPanel1!
-### test images for adding/editing a product
+  
+**test images for adding/editing a product**
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   
 
