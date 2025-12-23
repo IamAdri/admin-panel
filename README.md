@@ -24,7 +24,7 @@ In order to explore the website you need to use the following:
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   
 
-## Deployed version - [click here!](admin-panel-lemon-two.vercel.app.)
+## Deployed version - <a href="admin-panel-lemon-two.vercel.app" target="_blank">click here!</a>
 
 ### Dependencies
 
