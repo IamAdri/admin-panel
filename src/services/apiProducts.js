@@ -168,7 +168,11 @@ export async function editProduct(formData) {
   formData.newCollection === "yes"
     ? category.push(formData.category, "newCollection")
     : category.push(formData.category);
-  console.log(formData?.imagesFirstColor?.length);
+  //Set to null discount if it is "" or 0
+  const discount =
+    formData.discount === "" || formData.discount === "0"
+      ? null
+      : Number(formData.discount);
   //Create object for variants column
   const variants =
     formData?.imagesFirstColor?.length > 0
@@ -184,7 +188,7 @@ export async function editProduct(formData) {
       category: category,
       description: formData.description,
       price: Number(formData.price),
-      discount: Number(formData.discount),
+      discount: discount,
       itemType: formData.itemType,
     })
     .eq("id", formData.productID)
