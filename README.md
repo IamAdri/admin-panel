@@ -8,6 +8,8 @@ This project is a *demo* for my portofolio and it can do the following main task
 - **CRUD** actions of an admin website: fetch products and orders, edit and delete existing products, add new product. 
 - Show **charts** regarding revenue of last 6 months and general customer`s ratings
 - Authenticate administrator with **Supabase authenticator**.
+- **Log out** user automatically at the end of session.
+- -Change admin details and **password**.
 
 
 ## Project Screen Shot
@@ -19,11 +21,10 @@ This project is a *demo* for my portofolio and it can do the following main task
 
 ## Getting Started
 In order to explore the website you need to use the following **credentials:**
-* email (it is fake adress safe to use) - **admin@gmail.com**
+* email (fake adress safe to use) - **admin@gmail.com**
 * password - **AdminPanel1!**
   
-If you want to test adding new product functionality, feel free to use this images as demo:
-**test images for adding/editing a product**
+If you want to test **adding new product** functionality, feel free to use **images as demo** from public/test folder.
 
 ### Deployed version - [click here!](https://admin-panel-lemon-two.vercel.app)
 
@@ -48,17 +49,17 @@ npm run dev
 ```
 
 ## Reflection
-I created this website as a second project for my portofolio. After creating a fictional ecommerce websiste Adrielle, I thought it would be a good idea to create an admin panel so that I can implement more CRUD actions and also to show the ability to connect to websites to same database so that mutations in one website would affect the second.
+I created this website as a second project for my portofolio. After creating a demo e-commerce websiste Adrielle, I thought it would be a good idea to create an admin panel so that I can implement more **CRUD actions** and also to show the ability to connect more than one websites to **same database** so that changes in one website would affect the second.
 
-In order to diversify my portofolio and show my knowledge I have decided to create this one with React and React Query as for the first one I used Next.js. Also, for styling I used Styled Components and for authentication the Supabase Authenticator with credentials. 
+In order to diversify my portofolio and show my knowledge I have decided to create this one with **React** and **React Query** as for the first one I used Next.js. Also, for styling I used **styled-components** and for authentication the **Supabase Authenticator** with credentials. 
 
-It was a great learning experience of using React Query and React Hook Form for fetching and mutating data. Also, it was an opportunity to create charts with Recharts library and getting used to search and implement external libraries in the project. Personally, it was challenging to think about all side affects that might happen in both projects by mutating data in admin panel and identify all conditions that should be implemented to avoid differences or errors.
+It was a great learning experience of using React Query and **React Hook Form** for data fetching and mutating. Also, it was an opportunity to create charts with **Recharts** library and getting used to search and implement external libraries in the project. Personally, it was challenging to think about all side affects that might happen in both projects by mutating data in admin panel and reflect **realtime changes** in adrielle website.
 
 ## Author
 
-Adriana Sprincean - atoma304@gmail.com
+Adriana Sprincean - **atoma304@gmail.com**
 
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the MIT License - see the LICENSE file for details.
 
