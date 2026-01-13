@@ -3,13 +3,13 @@
 ## Description
 Admin panel website used to fetch and mutate data for Adrielle e-commerce website.
 
-This project is a *demo* for my portofolio and it can do the following main tasks:
+This project is a **demo for my portofolio** and it can do the following main tasks:
 
 - **CRUD** actions of an admin website: fetch products and orders, edit and delete existing products, add new product. 
 - Show **charts** regarding revenue of last 6 months and general customer`s ratings
 - Authenticate administrator with **Supabase authenticator**.
 - **Log out** user automatically at the end of session.
-- -Change admin details and **password**.
+- Change admin details and **password**.
 
 
 ## Project Screen Shot
